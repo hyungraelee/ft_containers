@@ -37,9 +37,17 @@ namespace ft
 		typedef typename allocator_type::difference_type		difference_type;
 
 
+	private:
+		allocator_type	_alloc;
+		size_type		_size;
+		size_type		_capacity;
+		pointer			_elemptr;
+
+	public:
 //===------------------------------ Member functions --------------------------------===//
 		// empty container constructor (default constructor)
-		explicit vector(const allocator_type& alloc = allocator_type());
+		explicit vector(const allocator_type& alloc = allocator_type())
+		: _alloc(alloc), _size(0), _capacity(0), _elemptr(NULL) {}
 
 		// fill constructor
 		explicit vector(size_type n, const value_type& val = value_type(),
