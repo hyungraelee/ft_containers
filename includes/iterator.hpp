@@ -181,7 +181,7 @@ class reverse_iterator {
    */
   template < class Iter >
   reverse_iterator(const reverse_iterator< Iter >& rev_it)
-      : current(rev_it.base());
+      : current(rev_it.base()) {}
 
   /* Destructor added to follow subject. */
   // virtual ~reverse_iterator() {}
@@ -226,8 +226,9 @@ class reverse_iterator {
    * difference type.
    * @return An iterator pointing to the element n positions away.
    */
-  reverse_iterator operator+(difference_type n) const;
-  { return (reverse_iterator(current - n)); }
+  reverse_iterator operator+(difference_type n) const {
+    return (reverse_iterator(current - n));
+  }
 
   /**
    * @brief Pre-increment iterator position.
@@ -245,8 +246,7 @@ class reverse_iterator {
    * @return The post-increment version returns the value *this had before the
    * call.
    */
-  reverse_iterator operator++(int);
-  {
+  reverse_iterator operator++(int) {
     reverse_iterator tmp = *this;
     ++(*this);
     return (tmp);
@@ -342,43 +342,110 @@ class reverse_iterator {
    * base iterator's own reference type.
    */
   reference operator[](difference_type n) const {
-    return (this->base()[-n - 1]);
+    return (this->current[-n - 1]);
   }
 };
 
+/**
+ * @brief Equal comparison between two reverse iterator.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return True if the condition is hold, otherwise false.
+ */
 template < class Iterator >
 bool operator==(const reverse_iterator< Iterator >& lhs,
-                const reverse_iterator< Iterator >& rhs);
+                const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() == rhs.base());
+}
 
+/**
+ * @brief Different comparison between two reverse iterator.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return True if the condition is hold, otherwise false.
+ */
 template < class Iterator >
 bool operator!=(const reverse_iterator< Iterator >& lhs,
-                const reverse_iterator< Iterator >& rhs);
+                const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() != rhs.base());
+}
 
+/**
+ * @brief Inferior comparison between two reverse iterator.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return True if the condition is hold, otherwise false.
+ */
 template < class Iterator >
 bool operator<(const reverse_iterator< Iterator >& lhs,
-               const reverse_iterator< Iterator >& rhs);
+               const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() > rhs.base());
+}
 
+/**
+ * @brief Inferior or equal comparison between two reverse iterator.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return True if the condition is hold, otherwise false.
+ */
 template < class Iterator >
 bool operator<=(const reverse_iterator< Iterator >& lhs,
-                const reverse_iterator< Iterator >& rhs);
+                const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() >= rhs.base());
+}
 
+/**
+ * @brief Superior comparison between two reverse iterator.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return True if the condition is hold, otherwise false.
+ */
 template < class Iterator >
 bool operator>(const reverse_iterator< Iterator >& lhs,
-               const reverse_iterator< Iterator >& rhs);
+               const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() < rhs.base());
+}
 
+/**
+ * @brief Superior or equal comparison between two reverse iterator.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return True if the condition is hold, otherwise false.
+ */
 template < class Iterator >
 bool operator>=(const reverse_iterator< Iterator >& lhs,
-                const reverse_iterator< Iterator >& rhs);
+                const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() <= rhs.base());
+}
 
+/**
+ * @brief Addition operator.
+ * Returns a reverse iterator pointing to the element located n positions away
+ * from the element pointed to by rev_it.
+ * @param n The number of location away the element pointed by rev_it.
+ * @param rev_it The reverse iterator.
+ * @return An iterator pointing to the element n positions away from rev_it.
+ */
 template < class Iterator >
 reverse_iterator< Iterator > operator+(
     typename reverse_iterator< Iterator >::difference_type n,
-    const reverse_iterator< Iterator >& rev_it);
+    const reverse_iterator< Iterator >& rev_it) {
+  return (rev_it + n);
+}
 
+/**
+ * @brief Subtraction operator.
+ * Returns the distance between lhs and rhs.
+ * @param lhs Base of comparison.
+ * @param rhs To compare with "lsh".
+ * @return The number of elements between lsh and rhs.
+ */
 template < class Iterator >
 typename reverse_iterator< Iterator >::difference_type operator-(
     const reverse_iterator< Iterator >& lhs,
-    const reverse_iterator< Iterator >& rhs);
+    const reverse_iterator< Iterator >& rhs) {
+  return (rhs.base() - lhs.base());
+}
 
 }  // namespace ft
 
