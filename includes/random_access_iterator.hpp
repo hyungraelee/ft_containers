@@ -1,7 +1,7 @@
 #ifndef RANDOM_ACCESS_ITERATOR_HPP
 #define RANDOM_ACCESS_ITERATOR_HPP
 
-#include "iterator.hpp"
+#include "bidirectional_iterator.hpp"
 
 namespace ft {
 
@@ -12,74 +12,75 @@ namespace ft {
  * are also valid random-access-iterators.
  */
 template < typename T >
-class random_access_iterator
-    : public ft::iterator< ft::random_access_iterator_tag, T > {
+class random_access_iterator : public ft::bidirectional_iterator< T > {
  public:
   typedef T value_type;
-  typedef T* pointer;
-  typedef T& reference;
-  typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type difference_type;
-  typedef typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category iterator_category;
+  typedef T *pointer;
+  typedef T &reference;
+  typedef typename ft::iterator< ft::random_access_iterator_tag,
+                                 T >::difference_type difference_type;
+  typedef typename ft::iterator< ft::random_access_iterator_tag,
+                                 T >::iterator_category iterator_category;
 
- private:
-  pointer _ptr;
+  random_access_iterator(pointer ptr = (void *)0)
+      : ft::bidirectional_iterator< T >(ptr) {}
+  random_access_iterator(const random_access_iterator< T > &other)
+      : ft::bidirectional_iterator< T >(other.base()) {}
+  virtual ~random_access_iterator() {}
 
- public:
-  // random_access_iterator(pointer ptr = NULL) : _ptr(ptr) {}
-  // random_access_iterator(const iterator< T, T *, T & > &other)
-  //     : _ptr(other.get_ptr()) {}
-  // ~random_access_iterator() {}
-
-  iterator &operator=(const iterator< T, T *, T & > &other);
-  {
-    if (this != &other) this->_ptr = other.get_ptr();
+  random_access_iterator &operator=(const random_access_iterator< T > &other) {
+    if (this != &other) this->_ptr = other.base();
     return (*this);
   }
 
-  iterator &operator++() {
-    ++this->_ptr;
+  random_access_iterator operator+(difference_type n) {
+    return (random_access_iterator(this->_ptr + n));
+  }
+
+  random_access_iterator operator-(difference_type n) {
+    return (random_access_iterator(this->_ptr - n));
+  }
+
+  difference_type operator-(const random_access_iterator< T > &other) {
+    return (this->_ptr - other.base());
+  }
+
+  random_access_iterator &operator+=(difference_type n) {
+    this->_ptr += n;
     return (*this);
   }
 
-  iterator operator++(int) {
-    iterator tmp = *this;
-    ++*this;
-    return (tmp);
-  }
-
-  iterator &operator--() {
-    --this->_ptr;
+  random_access_iterator &operator-=(difference_type n) {
+    this->_ptr -= n;
     return (*this);
   }
 
-  iterator operator--(int) {
-    iterator tmp = *this;
-    --*this;
-    return (tmp);
+  bool operator<(const random_access_iterator< T > &other) const {
+    return (this->_ptr < other.base());
   }
 
-  bool operator==(const iterator &other) const;
-  bool operator!=(const iterator &other) const;
+  bool operator>(const random_access_iterator< T > &other) const {
+    return (this->_ptr > other.base());
+  }
 
-  reference operator*() const;
-  pointer operator->() const;
+  bool operator<=(const random_access_iterator< T > &other) const {
+    return (this->_ptr <= other.base());
+  }
 
-  // iterator operator+(int n);
-  // iterator operator-(int n);
-  // iterator operator-(const iterator &other);
-  // 왜 difference_type n 이지?
+  bool operator>=(const random_access_iterator< T > &other) const {
+    return (this->_ptr >= other.base());
+  }
 
-  iterator &operator+=(int n);
-  iterator &operator-=(int n);
-
-  bool operator<(const iterator &other) const;
-  bool operator>(const iterator &other) const;
-  bool operator<=(const iterator &other) const;
-  bool operator>=(const iterator &other) const;
-
-  // reference operator[](int n)
-  // 왜 difference_type n 이지?
+  reference operator[](difference_type n) { return (*(this->_ptr + n)); }
 };
+
+template < class T >
+ft::random_access_iterator< T > operator+(
+    typename ft::random_access_iterator< T >::difference_type n,
+    ft::random_access_iterator< T > &it) {
+  return (it + n);
+}
+
 }  // namespace ft
 
 #endif
