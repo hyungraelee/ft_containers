@@ -41,10 +41,6 @@ class random_access_iterator : public ft::bidirectional_iterator< T > {
     return (random_access_iterator(this->_ptr - n));
   }
 
-  difference_type operator-(const random_access_iterator< T > &other) {
-    return (this->_ptr - other.base());
-  }
-
   random_access_iterator &operator+=(difference_type n) {
     this->_ptr += n;
     return (*this);
@@ -55,22 +51,6 @@ class random_access_iterator : public ft::bidirectional_iterator< T > {
     return (*this);
   }
 
-  bool operator<(const random_access_iterator< T > &other) const {
-    return (this->_ptr < other.base());
-  }
-
-  bool operator>(const random_access_iterator< T > &other) const {
-    return (this->_ptr > other.base());
-  }
-
-  bool operator<=(const random_access_iterator< T > &other) const {
-    return (this->_ptr <= other.base());
-  }
-
-  bool operator>=(const random_access_iterator< T > &other) const {
-    return (this->_ptr >= other.base());
-  }
-
   reference operator[](difference_type n) { return (*(this->_ptr + n)); }
 };
 
@@ -79,6 +59,37 @@ ft::random_access_iterator< T > operator+(
     typename ft::random_access_iterator< T >::difference_type n,
     ft::random_access_iterator< T > &it) {
   return (it + n);
+}
+
+template < class T >
+typename ft::random_access_iterator< T >::difference_type operator-(
+    const ft::random_access_iterator< T > &lhs,
+    const ft::random_access_iterator< T > &rhs) {
+  return (lhs.base() - rhs.base());
+}
+
+template < class T >
+bool operator<(const ft::random_access_iterator< T > &lhs,
+               const ft::random_access_iterator< T > &rhs) {
+  return (lhs.base() < rhs.base());
+}
+
+template < class T >
+bool operator>(const ft::random_access_iterator< T > &lhs,
+               const ft::random_access_iterator< T > &rhs) {
+  return (lhs.base() > rhs.base());
+}
+
+template < class T >
+bool operator<=(const ft::random_access_iterator< T > &lhs,
+                const ft::random_access_iterator< T > &rhs) {
+  return (lhs.base() <= rhs.base());
+}
+
+template < class T >
+bool operator>=(const ft::random_access_iterator< T > &lhs,
+                const ft::random_access_iterator< T > &rhs) {
+  return (lhs.base() >= rhs.base());
 }
 
 }  // namespace ft

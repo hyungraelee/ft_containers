@@ -25,21 +25,12 @@ class bidirectional_iterator
       : _ptr(other.base()) {}
   virtual ~bidirectional_iterator() {}
 
-  bidirectional_iterator &operator=(const bidirectional_iterator< T > &other)
-  {
+  bidirectional_iterator &operator=(const bidirectional_iterator< T > &other) {
     if (this != &other) this->_ptr = other.base();
     return (*this);
   }
 
-  bool operator==(const bidirectional_iterator< T > &other) const {
-    return (this->_ptr == other.base());
-  }
-
-  bool operator!=(const bidirectional_iterator< T > &other) const {
-    return (this->_ptr != other.base());
-  }
-
-  pointer const& base() const { return (this->_ptr); }
+  pointer const &base() const { return (this->_ptr); }
 
   reference operator*() const { return (*this->_ptr); }
 
@@ -67,6 +58,19 @@ class bidirectional_iterator
     return (tmp);
   }
 };
+
+template < class T >
+bool operator==(const ft::bidirectional_iterator< T > &lhs,
+                const ft::bidirectional_iterator< T > &rhs) {
+  return (lhs.base() == rhs.base());
+}
+
+template < class T >
+bool operator!=(const ft::bidirectional_iterator< T > &lhs,
+                const ft::bidirectional_iterator< T > &rhs) {
+  return (lhs.base() != rhs.base());
+}
+
 }  // namespace ft
 
 #endif  // BIDIRECTIONAL_ITERATOR_HPP
