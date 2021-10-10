@@ -22,7 +22,7 @@ class random_access_iterator : public ft::bidirectional_iterator< T > {
   typedef typename ft::iterator< ft::random_access_iterator_tag,
                                  T >::iterator_category iterator_category;
 
-  random_access_iterator(pointer ptr = (void *)0)
+  random_access_iterator(pointer ptr = u_nullptr)
       : ft::bidirectional_iterator< T >(ptr) {}
   random_access_iterator(const random_access_iterator< T > &other)
       : ft::bidirectional_iterator< T >(other.base()) {}

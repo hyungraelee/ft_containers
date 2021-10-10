@@ -2,6 +2,7 @@
 #define BIDIRECTIONAL_ITERATOR_HPP
 
 #include "iterator.hpp"
+#include "utils.hpp"
 
 namespace ft {
 template < typename T >
@@ -20,7 +21,7 @@ class bidirectional_iterator
   pointer _ptr;
 
  public:
-  bidirectional_iterator(pointer ptr = (void *)0) : _ptr(ptr) {}
+  bidirectional_iterator(pointer ptr = u_nullptr) : _ptr(ptr) {}
   bidirectional_iterator(const bidirectional_iterator< T > &other)
       : _ptr(other.base()) {}
   virtual ~bidirectional_iterator() {}

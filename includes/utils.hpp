@@ -1,7 +1,26 @@
 #if !defined(UTILS_HPP)
 #define UTILS_HPP
 
+#include "iterator.hpp"
+
 namespace ft {
+
+static class nullptr_t {
+ public:
+  template < class T >
+  operator T*() const {
+    return (0);
+  }
+
+  template < class C, class T >
+  operator T C::*() const {
+    return (0);
+  }
+
+ private:
+  void operator&() const;
+
+} u_nullptr = {};
 
 /**
  * @brief Enable type if condition is met.
@@ -17,6 +36,25 @@ template < typename T >
 struct enable_if< true, T > {
   typedef T type;
 };
+
+// template < typename T, typename U >
+// struct is_same {
+//   static const value = false;
+// };
+
+// template < typename T >
+// struct is_same< T, T > {
+//   static const value = true;
+// };
+
+// template < typename T,
+//            typename = typename ft::enable_if< ft::is_same<
+//                typename T::value_type,
+//                typename ft::iterator_traits< T >::value_type >::value >::type
+//                >
+// struct is_iter {
+//   static const value = true;
+// };
 
 /**
  * @brief Checks whether T is an integral type.
@@ -217,7 +255,7 @@ struct pair {
    * @param pr Another pair object.
    */
   template < class U, class V >
-  pair(const pair< U, V >& pr) : frist(pr.first), second(pr.second) {}
+  pair(const pair< U, V >& pr) : first(pr.first), second(pr.second) {}
 
   /**
    * @brief  initialization constructor
