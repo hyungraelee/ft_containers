@@ -22,6 +22,17 @@ static class nullptr_t {
 
 } u_nullptr = {};
 
+template < typename InputIterator >
+typename ft::iterator_traits<InputIterator>::difference_type distance (InputIterator first, InputIterator last)
+{
+  typename ft::iterator_traits<InputIterator>::difference_type dist = 0;
+
+  for (; first != last; first++) {
+    dist++;
+  }
+  return (dist);
+}
+
 /**
  * @brief Enable type if condition is met.
  * The type T is enabled as member type enable_if::type if Cond is true.
