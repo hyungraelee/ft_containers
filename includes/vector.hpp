@@ -2,7 +2,8 @@
 #define VECTOR_HPP
 
 #include <memory>
-// #include <stdexcept>
+
+# include <iostream>
 
 #include "random_access_iterator.hpp"
 #include "utils.hpp"
@@ -114,7 +115,7 @@ class vector {
         _start(u_nullptr),
         _end(u_nullptr),
         _end_capacity(u_nullptr) {
-    difference_type n = last - first;
+    difference_type n = ft::distance(first, last);
     this->_start = this->_alloc.allocate(n);
     this->_end = this->_start;
     for (; first != last; first++) {
@@ -192,6 +193,8 @@ class vector {
 
   // Resizes the container so that it contains n elements.
   void resize(size_type n, value_type val = value_type()) {
+    size_type prev_size = this->size();
+
     if (n > max_size()) throw(std::length_error("ft::vector::resize"));
     if (n <= this->size()) {
       while (n < this->size()) {
@@ -202,8 +205,12 @@ class vector {
         while (n > this->size()) this->push_back(val);
       } else if (n <= this->capacity() * 2) {
         this->reserve(this->capacity() * 2);
+        while (n-- - prev_size > 0)
+          this->_alloc.construct(this->_end++, val);
       } else {
         this->reserve(n);
+        while (n-- - prev_size > 0)
+          this->_alloc.construct(this->_end++, val);
       }
     }
   }
@@ -272,7 +279,7 @@ class vector {
       typename ft::enable_if< !ft::is_integral< InputIterator >::value >::type
           * = u_nullptr) {
     this->clear();
-    size_type _size = last - first;
+    size_type _size = ft::distance(first, last);
     if (this->capacity() >= _size) {
       while (first != last) {
         this->_alloc.construct(this->_end++, *first);
@@ -392,17 +399,16 @@ class vector {
       iterator position, InputIterator first, InputIterator last,
       typename ft::enable_if< !ft::is_integral< InputIterator >::value >::type
           * = u_nullptr) {
-    size_type n = last - first;
+    size_type n = ft::distance(first, last);
     size_type mv_back_count = this->_end - &(*position);
-
     this->resize(this->size() + n);
     pointer tmp = this->_end - 1;
     for (; mv_back_count > 0; mv_back_count--, tmp--) {
       this->_alloc.construct(tmp, *(tmp - n));
       this->_alloc.destroy(tmp - n);
     }
-    for (; first != last; last--) {
-      this->_alloc.construct(tmp--, *last);
+    while (first != last) {
+      this->_alloc.construct(tmp--, *(--last));
     }
   }
 
