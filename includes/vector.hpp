@@ -2,6 +2,7 @@
 #define VECTOR_HPP
 
 #include <memory>
+// #include <stdexcept>
 
 #include "random_access_iterator.hpp"
 #include "utils.hpp"
@@ -246,11 +247,11 @@ class vector {
 
   // Returns a reference to the element at position n in the vector.
   reference at(size_type n) {
-    if (n >= this->size()) throw(std::length_error("ft::vector::at"));
+    if (n >= this->size()) throw(std::out_of_range("ft::vector::at"));
     return ((*this)[n]);
   }
   const_reference at(size_type n) const {
-    if (n >= this->size()) throw(std::length_error("ft::vector::at"));
+    if (n >= this->size()) throw(std::out_of_range("ft::vector::at"));
     return ((*this)[n]);
   }
 
@@ -259,8 +260,8 @@ class vector {
   const_reference front() const { return (*(this->_start)); }
 
   // Returns a reference to the last element in the vector.
-  reference back() { return (*(this->end - 1)); }
-  const_reference back() const { return (*(this->end - 1)); }
+  reference back() { return (*(this->_end - 1)); }
+  const_reference back() const { return (*(this->_end - 1)); }
 
   //=+=+=+=+=+=+= Modifiers =+=+=+=+=+=+=//
   /* Assigns new contents to the vector, replacing its current contents,
