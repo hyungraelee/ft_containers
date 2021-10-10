@@ -279,13 +279,12 @@ class vector {
       }
     } else {
       pointer prev_start = this->_start;
-      pointer prev_end = this->_end;
       pointer prev_end_capacity = this->_end_capacity;
 
       this->_start = this->_alloc.allocate(_size);
       this->_end_capacity = this->_start + _size;
       this->_end = this->_start;
-      for (pointer tmp = prev_start; tmp != prev_end; tmp++) {
+      for (pointer tmp = &(*first); tmp != &(*last); tmp++) {
         this->_alloc.construct(this->_end++, *tmp);
       }
       this->_alloc.deallocate(prev_start, prev_end_capacity - prev_start);
@@ -300,7 +299,6 @@ class vector {
       }
     } else {
       pointer prev_start = this->_start;
-      pointer prev_end = this->_end;
       pointer prev_end_capacity = this->_end_capacity;
 
       this->_start = this->_alloc.allocate(n);
