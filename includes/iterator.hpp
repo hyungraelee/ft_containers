@@ -358,6 +358,12 @@ bool operator==(const reverse_iterator< Iterator >& lhs,
   return (lhs.base() == rhs.base());
 }
 
+template < class Iterator_L, class Iterator_R >
+bool operator==(const reverse_iterator< Iterator_L >& lhs,
+                const reverse_iterator< Iterator_R >& rhs) {
+  return (lhs.base() == rhs.base());
+}
+
 /**
  * @brief Different comparison between two reverse iterator.
  * @param lhs Base of comparison.
@@ -367,6 +373,12 @@ bool operator==(const reverse_iterator< Iterator >& lhs,
 template < class Iterator >
 bool operator!=(const reverse_iterator< Iterator >& lhs,
                 const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() != rhs.base());
+}
+
+template < class Iterator_L, class Iterator_R >
+bool operator!=(const reverse_iterator< Iterator_L >& lhs,
+                const reverse_iterator< Iterator_R >& rhs) {
   return (lhs.base() != rhs.base());
 }
 
@@ -382,6 +394,12 @@ bool operator<(const reverse_iterator< Iterator >& lhs,
   return (lhs.base() > rhs.base());
 }
 
+template < class Iterator_L, class Iterator_R >
+bool operator<(const reverse_iterator< Iterator_L >& lhs,
+               const reverse_iterator< Iterator_R >& rhs) {
+  return (lhs.base() > rhs.base());
+}
+
 /**
  * @brief Inferior or equal comparison between two reverse iterator.
  * @param lhs Base of comparison.
@@ -391,6 +409,12 @@ bool operator<(const reverse_iterator< Iterator >& lhs,
 template < class Iterator >
 bool operator<=(const reverse_iterator< Iterator >& lhs,
                 const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() >= rhs.base());
+}
+
+template < class Iterator_L, class Iterator_R >
+bool operator<=(const reverse_iterator< Iterator_L >& lhs,
+                const reverse_iterator< Iterator_R >& rhs) {
   return (lhs.base() >= rhs.base());
 }
 
@@ -406,6 +430,12 @@ bool operator>(const reverse_iterator< Iterator >& lhs,
   return (lhs.base() < rhs.base());
 }
 
+template < class Iterator_L, class Iterator_R >
+bool operator>(const reverse_iterator< Iterator_L >& lhs,
+               const reverse_iterator< Iterator_R >& rhs) {
+  return (lhs.base() < rhs.base());
+}
+
 /**
  * @brief Superior or equal comparison between two reverse iterator.
  * @param lhs Base of comparison.
@@ -415,6 +445,12 @@ bool operator>(const reverse_iterator< Iterator >& lhs,
 template < class Iterator >
 bool operator>=(const reverse_iterator< Iterator >& lhs,
                 const reverse_iterator< Iterator >& rhs) {
+  return (lhs.base() <= rhs.base());
+}
+
+template < class Iterator_L, class Iterator_R >
+bool operator>=(const reverse_iterator< Iterator_L >& lhs,
+                const reverse_iterator< Iterator_R >& rhs) {
   return (lhs.base() <= rhs.base());
 }
 

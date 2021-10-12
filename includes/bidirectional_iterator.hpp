@@ -66,9 +66,21 @@ bool operator==(const ft::bidirectional_iterator< T > &lhs,
   return (lhs.base() == rhs.base());
 }
 
+template < class T_L, class T_R >
+bool operator==(const ft::bidirectional_iterator< T_L > &lhs,
+                const ft::bidirectional_iterator< T_R > &rhs) {
+  return (lhs.base() == rhs.base());
+}
+
 template < class T >
 bool operator!=(const ft::bidirectional_iterator< T > &lhs,
                 const ft::bidirectional_iterator< T > &rhs) {
+  return (lhs.base() != rhs.base());
+}
+
+template < class T_L, class T_R >
+bool operator!=(const ft::bidirectional_iterator< T_L > &lhs,
+                const ft::bidirectional_iterator< T_R > &rhs) {
   return (lhs.base() != rhs.base());
 }
 

@@ -1,9 +1,8 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
+#include <iostream>
 #include <memory>
-
-# include <iostream>
 
 #include "random_access_iterator.hpp"
 #include "utils.hpp"
@@ -59,12 +58,12 @@ class vector {
    * @brief A type that provides a random-access iterator that can read or
    * modify any element in a reversed vector.
    */
-  typedef std::reverse_iterator< iterator > reverse_iterator;
+  typedef ft::reverse_iterator< iterator > reverse_iterator;
   /**
    * @brief A type that provides a random-access iterator that can read any
    * const element in the vector.
    */
-  typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
+  typedef ft::reverse_iterator< const_iterator > const_reverse_iterator;
 
   /**
    * @brief A type that counts the number of elements in a vector. -> size_t
@@ -109,20 +108,20 @@ class vector {
   template < typename InputIterator >
   vector(InputIterator first, InputIterator last,
          const allocator_type &alloc = allocator_type(),
-         typename ft::enable_if<
-             !ft::is_integral< InputIterator >::value >::type * = u_nullptr)
+         typename ft::enable_if< !ft::is_integral< InputIterator >::value,
+                                 InputIterator >::type * = u_nullptr)
       : _alloc(alloc),
         _start(u_nullptr),
         _end(u_nullptr),
         _end_capacity(u_nullptr) {
     difference_type n = ft::distance(first, last);
     this->_start = this->_alloc.allocate(n);
+    this->_end_capacity = this->_start + n;
     this->_end = this->_start;
     for (; first != last; first++) {
       this->_alloc.construct(this->_end, *first);
       this->_end++;
     }
-    this->_end_capacity = this->_end;
   }
 
   // copy constructor
@@ -160,25 +159,27 @@ class vector {
 
   //=+=+=+=+=+=+= Iterators =+=+=+=+=+=+=//
   // Returns an iterator pointing to the first element in the vector.
-  iterator begin() { return (this->_start); }
-
-  const_iterator begin() const { return (this->_start); }
+  iterator begin() { return (iterator(this->_start)); }
+  const_iterator begin() const { return (const_iterator(this->_start)); }
 
   // Returns an iterator referring to the past-the-end element in the vector
   // container.
-  iterator end() { return (this->_end); }
-
-  const_iterator end() const { return (this->_end); }
+  iterator end() { return (iterator(this->_end)); }
+  const_iterator end() const { return (const_iterator(this->_end)); }
 
   /* Returns a reverse iterator pointing to the last element in the vector
   (i.e., its reverse beginning). */
-  reverse_iterator rbegin() { return (this->end); }
-  const_reverse_iterator rbegin() const { return (this->end); }
+  reverse_iterator rbegin() { return (reverse_iterator(this->_end)); }
+  const_reverse_iterator rbegin() const {
+    return (const_reverse_iterator(this->_end));
+  }
 
   /* Returns a reverse iterator pointing to the theoretical element preceding
   the first element in the vector (which is considered its reverse end). */
-  reverse_iterator rend() { return (this->_start); }
-  const_reverse_iterator rend() const { return (this->_start); }
+  reverse_iterator rend() { return (reverse_iterator(this->_start)); }
+  const_reverse_iterator rend() const {
+    return (const_reverse_iterator(this->_start));
+  }
 
   //=+=+=+=+=+=+= Capacity =+=+=+=+=+=+=//
   // Returns the number of elements in the vector.
@@ -205,12 +206,10 @@ class vector {
         while (n > this->size()) this->push_back(val);
       } else if (n <= this->capacity() * 2) {
         this->reserve(this->capacity() * 2);
-        while (n-- - prev_size > 0)
-          this->_alloc.construct(this->_end++, val);
+        while (n-- - prev_size > 0) this->_alloc.construct(this->_end++, val);
       } else {
         this->reserve(n);
-        while (n-- - prev_size > 0)
-          this->_alloc.construct(this->_end++, val);
+        while (n-- - prev_size > 0) this->_alloc.construct(this->_end++, val);
       }
     }
   }
@@ -274,10 +273,9 @@ class vector {
   /* Assigns new contents to the vector, replacing its current contents,
   and modifying its size accordingly. */
   template < typename InputIterator >
-  void assign(
-      InputIterator first, InputIterator last,
-      typename ft::enable_if< !ft::is_integral< InputIterator >::value >::type
-          * = u_nullptr) {
+  void assign(InputIterator first, InputIterator last,
+              typename ft::enable_if< !ft::is_integral< InputIterator >::value,
+                                      InputIterator >::type * = u_nullptr) {
     this->clear();
     size_type _size = ft::distance(first, last);
     if (this->capacity() >= _size) {
@@ -292,7 +290,7 @@ class vector {
       this->_start = this->_alloc.allocate(_size);
       this->_end_capacity = this->_start + _size;
       this->_end = this->_start;
-      for (pointer tmp = &(*first); tmp != &(*last); tmp++) {
+      for (const_pointer tmp = &(*first); tmp != &(*last); tmp++) {
         this->_alloc.construct(this->_end++, *tmp);
       }
       this->_alloc.deallocate(prev_start, prev_end_capacity - prev_start);

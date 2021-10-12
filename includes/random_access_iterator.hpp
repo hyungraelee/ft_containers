@@ -28,17 +28,18 @@ class random_access_iterator : public ft::bidirectional_iterator< T > {
       : ft::bidirectional_iterator< T >(other.base()) {}
   virtual ~random_access_iterator() {}
 
-  random_access_iterator &operator=(const random_access_iterator< T > &other) {
+  random_access_iterator &operator=(
+      const ft::bidirectional_iterator< T > &other) {
     if (this != &other) this->_ptr = other.base();
     return (*this);
   }
 
   random_access_iterator operator+(difference_type n) {
-    return (random_access_iterator(this->_ptr + n));
+    return (this->_ptr + n);
   }
 
   random_access_iterator operator-(difference_type n) {
-    return (random_access_iterator(this->_ptr - n));
+    return (this->_ptr - n);
   }
 
   random_access_iterator &operator+=(difference_type n) {
@@ -49,6 +50,28 @@ class random_access_iterator : public ft::bidirectional_iterator< T > {
   random_access_iterator &operator-=(difference_type n) {
     this->_ptr -= n;
     return (*this);
+  }
+
+  random_access_iterator &operator++() {
+    return (dynamic_cast< random_access_iterator & >(
+        (ft::bidirectional_iterator< T >::operator++())));
+  }
+
+  random_access_iterator operator++(int) {
+    random_access_iterator tmp = *this;
+    *this = random_access_iterator::operator++();
+    return (tmp);
+  }
+
+  random_access_iterator &operator--() {
+    return (dynamic_cast< random_access_iterator & >(
+        (ft::bidirectional_iterator< T >::operator--())));
+  }
+
+  random_access_iterator operator--(int) {
+    random_access_iterator tmp = *this;
+    *this = random_access_iterator::operator--();
+    return (tmp);
   }
 
   reference operator[](difference_type n) { return (*(this->_ptr + n)); }
@@ -65,6 +88,13 @@ template < class T >
 typename ft::random_access_iterator< T >::difference_type operator-(
     const ft::random_access_iterator< T > &lhs,
     const ft::random_access_iterator< T > &rhs) {
+  return (lhs.base() - rhs.base());
+}
+
+template < class T_L, class T_R >
+typename ft::random_access_iterator< T_L >::difference_type operator-(
+    const ft::random_access_iterator< T_L > &lhs,
+    const ft::random_access_iterator< T_R > &rhs) {
   return (lhs.base() - rhs.base());
 }
 
