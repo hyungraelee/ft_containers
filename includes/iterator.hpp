@@ -483,6 +483,13 @@ typename reverse_iterator< Iterator >::difference_type operator-(
   return (rhs.base() - lhs.base());
 }
 
+template < class Iterator_L, class Iterator_R >
+typename reverse_iterator< Iterator_L >::difference_type operator-(
+    const reverse_iterator< Iterator_L >& lhs,
+    const reverse_iterator< Iterator_R >& rhs) {
+  return (rhs.base() - lhs.base());
+}
+
 }  // namespace ft
 
 #endif

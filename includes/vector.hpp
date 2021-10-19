@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 
-#include "random_access_iterator.hpp"
+#include "VectorIterator.hpp"
 #include "utils.hpp"
 
 namespace ft {
@@ -48,12 +48,12 @@ class vector {
    * @brief A type that provides a random-access iterator that can read or
    * modify any element in a vector.
    */
-  typedef ft::random_access_iterator< T > iterator;
+  typedef ft::VectorIterator< T > iterator;
   /**
    * @brief A type that provides a random-access iterator that can read a const
    * element in a vector.
    */
-  typedef ft::random_access_iterator< const T > const_iterator;
+  typedef ft::VectorIterator< const T > const_iterator;
   /**
    * @brief A type that provides a random-access iterator that can read or
    * modify any element in a reversed vector.
