@@ -23,9 +23,9 @@ static class nullptr_t {
 } u_nullptr = {};
 
 template < typename InputIterator >
-typename ft::iterator_traits<InputIterator>::difference_type distance (InputIterator first, InputIterator last)
-{
-  typename ft::iterator_traits<InputIterator>::difference_type dist = 0;
+typename ft::iterator_traits< InputIterator >::difference_type distance(
+    InputIterator first, InputIterator last) {
+  typename ft::iterator_traits< InputIterator >::difference_type dist = 0;
 
   for (; first != last; first++) {
     dist++;
@@ -247,6 +247,18 @@ bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2,
   return true;
 }
 
+template < class Arg1, class Arg2, class Result >
+struct binary_function {
+  typedef Arg1 first_argument_type;
+  typedef Arg2 second_argument_type;
+  typedef Result result_type;
+};
+
+template < class T >
+struct less : binary_function< T, T, bool > {
+  bool operator()(const T& x, const T& y) const { return x < y; }
+};
+
 template < class T1, class T2 >
 struct pair {
  public:
@@ -297,7 +309,7 @@ struct pair {
  */
 template < class T1, class T2 >
 bool operator==(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
-  return lhs.first == rhs.first && lhs.second == rhs.second;
+  return (lhs.first == rhs.first && lhs.second == rhs.second);
 }
 
 /**
@@ -320,7 +332,7 @@ bool operator!=(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
 template < class T1, class T2 >
 bool operator<(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return lhs.first < rhs.first ||
-         (!(rhs.first < lhs.first) && lhs.second < rhs.second);
+         (!(rhs.first < lhs.first) && (lhs.second < rhs.second));
 }
 
 /**
@@ -331,7 +343,7 @@ bool operator<(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
  */
 template < class T1, class T2 >
 bool operator<=(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
-  return !(rhs < lhs);
+  return (!(rhs < lhs));
 }
 
 /**
@@ -342,7 +354,7 @@ bool operator<=(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
  */
 template < class T1, class T2 >
 bool operator>(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
-  return rhs < lhs;
+  return (rhs < lhs);
 }
 
 /**

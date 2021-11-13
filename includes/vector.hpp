@@ -1,7 +1,6 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include <iostream>
 #include <memory>
 
 #include "VectorIterator.hpp"
