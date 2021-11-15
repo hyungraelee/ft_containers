@@ -1,6 +1,8 @@
 #if !defined(UTILS_HPP)
 #define UTILS_HPP
 
+// #include <iostream>
+
 #include "iterator.hpp"
 
 namespace ft {
@@ -256,7 +258,8 @@ struct binary_function {
 
 template < class T >
 struct less : binary_function< T, T, bool > {
-  bool operator()(const T& x, const T& y) const { return x < y; }
+  bool operator()(const T& x, const T& y) const {
+    return x < y; }
 };
 
 template < class T1, class T2 >

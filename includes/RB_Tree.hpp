@@ -2,10 +2,11 @@
 #define RB_TREE_HPP
 
 #include <memory>
-
+#include <iostream>
 #include "RB_TreeIterator.hpp"
 // #include "RB_TreeNode.hpp"
 // #include "utils.hpp"
+#include "printTree.hpp"
 
 namespace ft {
 
@@ -41,10 +42,12 @@ class RB_Tree {
         _node_alloc(node_alloc_type()) {
     // nil로 루트 노드 세팅
     this->_nil = make_nil_node();
+    this->_nil->color = BLACK;
     this->_nil->leftChild = this->_nil;
     this->_nil->rightChild = this->_nil;
     this->_nil->parent = this->_nil;
     this->_root = this->_nil;
+// std::cout << "nilColor: " << ((this->_nil->color == RED) ? "RED" : "BLACK") << std::endl;
   }
 
   RB_Tree(const RB_Tree& ot)
@@ -112,7 +115,7 @@ class RB_Tree {
     return (result);
   }
 
-  size_type size() const { return (_size); }
+  size_type size() const { return (this->_size); }
 
   ft::pair< node_type*, bool > insert(const value_type& val,
                                       node_type* hint = NULL) {
@@ -134,7 +137,6 @@ class RB_Tree {
     if (hint != NULL) {
       position = check_hint(val, hint);
     }
-
     // 들어갈 자리 찾기
     while (!position->is_nil()) {
       if (_comp(val, *(position->value))) {  // position 기준 왼쪽으로
@@ -144,6 +146,7 @@ class RB_Tree {
           inserted->parent = position;
           inserted->leftChild = this->_nil;
           inserted->rightChild = this->_nil;
+          break;
         } else {
           position = position->leftChild;
         }
@@ -154,6 +157,7 @@ class RB_Tree {
           inserted->parent = position;
           inserted->leftChild = this->_nil;
           inserted->rightChild = this->_nil;
+          break;
         } else {
           position = position->rightChild;
         }
@@ -164,17 +168,17 @@ class RB_Tree {
 
     // 여기로 넘어오면 일단 insert 됨.
     ++this->_size;
-    if (position->color == RED && position->parent->color == RED) {
-      if (position->get_uncle_color() == BLACK) {
-        Restructuring(position);
+    if (inserted->color == RED && inserted->parent->color == RED) {
+      if (inserted->get_uncle_color() == BLACK) {
+        Restructuring(inserted);
       } else {
-        Recoloring(position);
+        Recoloring(inserted);
       }
     }
-
+    // std::cout << "Print Tree" << std::endl;
+    // ft::printTree(this->_root, 0);
     this->_nil->parent = get_back_node();
-
-    return (ft::make_pair(position, true));
+    return (ft::make_pair(inserted, true));
   }
 
   size_type erase(node_type* target) {
@@ -233,7 +237,7 @@ class RB_Tree {
   node_type* lower_bound(const value_type& k) const {
     iterator itlow(get_front_node());
 
-    while (_comp(*itlow, k) || !itlow.base()->is_nil()) {
+    while (!itlow.base()->is_nil() && _comp(*itlow, k)) {
       itlow++;
     }
     return (itlow.base());
@@ -242,7 +246,7 @@ class RB_Tree {
   node_type* upper_bound(const value_type& k) const {
     iterator itup(lower_bound(k));
 
-    if (!_comp(*itup, k) && !_comp(k, *itup)) {
+    if (!itup.base()->is_nil() && !_comp(*itup, k) && !_comp(k, *itup)) {
       itup++;
     }
     return (itup.base());
@@ -379,6 +383,10 @@ class RB_Tree {
       connect_right(top, order[1]);
     } else if (grand_parent->is_nil()) {
       order[1]->parent = this->_nil;
+    } else if (grand_parent->is_root()) {
+      this->_root = order[1];
+      this->_root->parent = this->_nil;
+      this->_root->color = BLACK;
     }
     connect_left(order[1], order[0]);
     connect_right(order[1], order[2]);
@@ -430,8 +438,10 @@ class RB_Tree {
    * 노드의 parent보다 작으면 hint부터 탐색.
    */
   node_type* check_hint(value_type val, node_type* hint) {
-    if (*(hint->value) < val) {
-      if (hint->is_leftchild() && val < *(hint->parent->value)) {
+    // if (*(hint->value) < val) {
+    if (_comp(*(hint->value), val)) {
+      // if (hint->is_leftchild() && val < *(hint->parent->value)) {
+      if (hint->is_leftchild() && _comp(val, *(hint->parent->value))) {
         return hint;
       } else if (hint->is_rightchild()) {
         node_type* tmp = hint->parent;
@@ -439,7 +449,8 @@ class RB_Tree {
         while (tmp->is_rightchild()) {
           tmp = tmp->parent;
         }
-        if (tmp->is_leftchild() && *(tmp->parent->value) <= val) {
+        // if (tmp->is_leftchild() && *(tmp->parent->value) <= val) {
+        if (tmp->is_leftchild() && !_comp(val, *(tmp->parent->value))) {
           return this->_root;
         }
         return hint;

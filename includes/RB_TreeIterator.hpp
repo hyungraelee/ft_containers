@@ -80,7 +80,7 @@ class RB_TreeIterator
  public:
   RB_TreeIterator(node_type *ptr = u_nullptr) : np(ptr) {}
   RB_TreeIterator(const RB_TreeIterator< T > &other) : np(other.base()) {}
-  virtual ~RB_TreeIterator();
+  virtual ~RB_TreeIterator() {};
 
   RB_TreeIterator &operator=(const RB_TreeIterator< T > &other) {
     if (this != &other) this->np = other.base();
