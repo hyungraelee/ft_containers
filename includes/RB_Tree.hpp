@@ -59,7 +59,7 @@ class RB_Tree {
     this->_nil = make_nil_node();
     this->_nil->leftChild = this->_nil;
     this->_nil->rightChild = this->_nil;
-    this->_root = copy(ot._root);
+    this->_root = copy(ot._root, this->_nil);
     this->_nil->parent = get_back_node();
   }
 
@@ -134,7 +134,7 @@ class RB_Tree {
       return (ft::make_pair(this->_root, true));
     }
 
-    if (hint != NULL) {
+    if (hint != NULL && !hint->is_nil()) {
       position = check_hint(val, hint);
     }
     // 들어갈 자리 찾기
@@ -272,6 +272,10 @@ class RB_Tree {
       copied->rightChild = copy(src->rightChild);
     }
     return (copied);
+  }
+
+  void showTree() {
+    ft::printTree(_root, 0);
   }
 
  private:
@@ -482,6 +486,11 @@ class RB_Tree {
     iterator tmp(target);
     node_type* n;
     alloc_type _alloc;
+
+    // target노드가 tree 가지 끝의 노드인 경우.
+    if (target->leftChild->is_nil() && target->rightChild->is_nil()) {
+      return target;
+    }
 
     if (!target->leftChild->is_nil()) {
       n = (--tmp).base();
