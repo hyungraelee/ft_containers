@@ -52,6 +52,11 @@ class RB_TreeIterator
   node_type *get_before() {
     node_type *ret = NULL;
 
+    if (this->np->is_nil()) {
+      ret = this->np->parent;
+      return ret;
+    }
+
     if (!this->np->leftChild->is_nil()) {  // 현재 leftChild가 있는 경우.
       ret = this->np->leftChild;
       while (!ret->rightChild->is_nil()) {
