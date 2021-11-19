@@ -1,8 +1,11 @@
 #if !defined(RB_TREE_HPP)
 #define RB_TREE_HPP
 
-#include <memory>
+#include <algorithm>
 #include <iostream>
+#include <limits>
+#include <memory>
+
 #include "RB_TreeIterator.hpp"
 // #include "RB_TreeNode.hpp"
 // #include "utils.hpp"
@@ -47,7 +50,8 @@ class RB_Tree {
     this->_nil->rightChild = this->_nil;
     this->_nil->parent = this->_nil;
     this->_root = this->_nil;
-// std::cout << "nilColor: " << ((this->_nil->color == RED) ? "RED" : "BLACK") << std::endl;
+    // std::cout << "nilColor: " << ((this->_nil->color == RED) ? "RED" :
+    // "BLACK") << std::endl;
   }
 
   RB_Tree(const RB_Tree& ot)
@@ -59,19 +63,23 @@ class RB_Tree {
     this->_nil = make_nil_node();
     this->_nil->leftChild = this->_nil;
     this->_nil->rightChild = this->_nil;
-    this->_root = copy(ot._root, this->_nil);
+    // this->_root = copy(ot._root, this->_root);
+    copy(ot);
     this->_nil->parent = get_back_node();
   }
 
   virtual ~RB_Tree() {
-    clear(_root);
-    delete_node(this->_nil);
+    clear();
+    // delete_node(this->_nil);
+    _node_alloc.destroy(this->_nil);
+    _node_alloc.deallocate(this->_nil, 1);
   }
 
   RB_Tree& operator=(const RB_Tree& x) {
     if (this != &x) {
-      clear();
-      this->_root = copy(x._root);
+      // clear();
+      // this->_root = copy(x._root);
+      copy(x);
     }
     return (*this);
   }
@@ -81,7 +89,7 @@ class RB_Tree {
   node_type* get_front_node() const {
     node_type* res = this->_root;
 
-    while (res->leftChild && !res->leftChild->is_nil()) {
+    while (res->leftChild && !res->is_nil() && !res->leftChild->is_nil()) {
       res = res->leftChild;
     }
     return (res);
@@ -90,7 +98,7 @@ class RB_Tree {
   node_type* get_back_node() const {
     node_type* res = this->_root;
 
-    while (res->rightChild && !res->rightChild->is_nil()) {
+    while (res->rightChild && !res->is_nil() && !res->rightChild->is_nil()) {
       res = res->rightChild;
     }
     return (res);
@@ -116,6 +124,8 @@ class RB_Tree {
   }
 
   size_type size() const { return (this->_size); }
+  // size_type max_size() const { return
+  // std::min<size_type>(_node_alloc.max_size(), numeric_limits<dis) }
 
   ft::pair< node_type*, bool > insert(const value_type& val,
                                       node_type* hint = NULL) {
@@ -225,6 +235,9 @@ class RB_Tree {
     if (p == NULL) {
       p = this->_root;
     }
+    if (p->is_nil()) {
+      return;
+    }
     if (!p->leftChild->is_nil()) {
       clear(p->leftChild);
     }
@@ -254,29 +267,41 @@ class RB_Tree {
 
   void copy(const RB_Tree& x) {
     clear();
-    this->_root = copy(x._root);
+    copy(x._root);
+    // this->_root = copy(x._root, this->_root);
   }
 
-  node_type* copy(node_type* src) {
-    if (src->is_nil()) {
-      return (this->_nil);
+  void copy(node_type* node) {
+    if (node->is_nil()) {
+      return;
     }
-    node_type* copied = make_val_node(*src->value);
-    copied->parent = this->_nil;
-    copied->leftChild = this->_nil;
-    copied->rightChild = this->_nil;
-    if (!src->leftChild->is_nil()) {
-      copied->leftChild = copy(src->leftChild);
+    insert(*node->value);
+    if (!node->leftChild->is_nil()) {
+      copy(node->leftChild);
     }
-    if (!src->rightChild->is_nil()) {
-      copied->rightChild = copy(src->rightChild);
+    if (!node->rightChild->is_nil()) {
+      copy(node->rightChild);
     }
-    return (copied);
   }
 
-  void showTree() {
-    ft::printTree(_root, 0);
-  }
+  // node_type* copy(node_type* src, node_type* parent) {
+  //   if (src->is_nil()) {
+  //     return (this->_nil);
+  //   }
+  //   node_type* copied = make_val_node(*src->value);
+  //   copied->parent = parent;
+  //   copied->leftChild = this->_nil;
+  //   copied->rightChild = this->_nil;
+  //   if (!src->leftChild->is_nil()) {
+  //     copied->leftChild = copy(src->leftChild, parent);
+  //   }
+  //   if (!src->rightChild->is_nil()) {
+  //     copied->rightChild = copy(src->rightChild, parent);
+  //   }
+  //   return (copied);
+  // }
+
+  void showTree() { ft::printTree(_root, 0); }
 
  private:
   bool is_double_RED(node_type* child, node_type* parent) {
@@ -413,6 +438,15 @@ class RB_Tree {
     child->parent = parent;
   }
 
+  void set_root(node_type* n) {
+    node_type* tmp = n;
+
+    while (!tmp->parent->is_nil()) {
+      tmp = tmp->parent;
+    }
+    this->_root = tmp;
+  }
+
   void rotate_left(node_type* p) {
     node_type* new_p = p->rightChild;
 
@@ -421,6 +455,7 @@ class RB_Tree {
     p->rightChild = new_p->leftChild;
     p->rightChild->parent = p;
     new_p->leftChild = p;
+    set_root(p);
   }
 
   void rotate_right(node_type* p) {
@@ -431,6 +466,7 @@ class RB_Tree {
     p->leftChild = new_p->rightChild;
     p->leftChild->parent = p;
     new_p->rightChild = p;
+    set_root(p);
   }
 
   /**
@@ -497,6 +533,7 @@ class RB_Tree {
     } else {
       n = (++tmp).base();
     }
+
     _alloc.destroy(target->value);
     _alloc.construct(target->value, *(n->value));
     return n;
@@ -628,6 +665,10 @@ class RB_Tree {
   }
 
   void delete_node(node_type* node) {
+    if (node->is_root()) {
+      this->_root = this->_nil;
+    }
+
     _node_alloc.destroy(node);
     _node_alloc.deallocate(node, 1);
     --this->_size;

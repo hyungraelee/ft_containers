@@ -2,6 +2,7 @@
 #define RB_TREENODE_HPP
 
 #include <memory>
+#include <iostream>
 
 namespace ft {
 

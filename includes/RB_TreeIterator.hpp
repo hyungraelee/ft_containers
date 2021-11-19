@@ -22,6 +22,7 @@ class RB_TreeIterator
 
  private:
   node_type *np;
+
   node_type *get_next() {
     node_type *ret = NULL;
 

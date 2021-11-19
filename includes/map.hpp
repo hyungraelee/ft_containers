@@ -105,6 +105,7 @@ class map {
   size_type max_size() const {
     typename tree_type::node_alloc_type _node_alloc;
     return (_node_alloc.max_size());
+    // return (_tree.max_size());
   }
 
   /* tree에서 k 키를 갖는 노드 만든다고 가정하고 들어감. (insert 사용.)
@@ -161,17 +162,23 @@ class map {
 
   void erase(iterator first, iterator last) {
     while (first != last) {
-      _tree.erase(first.base());
+      iterator tmp = first;
       ++first;
+      erase(tmp);
     }
   }
 
   void swap(map& x) {
-    tree_type save;
+    if (*this == x) {
+      return ;
+    }
 
-    save = this->_tree;
-    this->_tree = x._tree;
-    x._tree = save;
+    unsigned char buf[sizeof(map)];
+    memcpy(buf, reinterpret_cast< void* >(&x), sizeof(map));
+    memcpy(reinterpret_cast< unsigned char* >(&x),
+           reinterpret_cast< void* >(this), sizeof(map));
+    memcpy(reinterpret_cast< unsigned char* >(this),
+           reinterpret_cast< void* >(buf), sizeof(map));
   }
 
   void clear() { _tree.clear(); }
