@@ -161,10 +161,23 @@ class map {
   }
 
   void erase(iterator first, iterator last) {
+    // iterator tmp;
     while (first != last) {
+      // tmp = first;
       iterator tmp = first;
       ++first;
       erase(tmp);
+      // if (first.base()->leftChild->is_nil() && first.base()->rightChild->is_nil()) {
+      //   tmp = first;
+      // }
+      // else if (!first.base()->leftChild->is_nil()) {
+      //   --tmp;
+      // }
+      // else if (!first.base()->rightChild->is_nil()) {
+      //   ++tmp;
+      // }
+      // ++first;
+      // erase(tmp);
     }
   }
 

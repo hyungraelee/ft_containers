@@ -114,7 +114,7 @@ class RB_Tree {
     }
     while (!result->is_nil() &&
            (_comp(val, *result->value) || _comp(*result->value, val))) {
-      if (val < *(result->value)) {
+      if (_comp(val, *(result->value))) {
         result = result->leftChild;
       } else {
         result = result->rightChild;
@@ -201,8 +201,8 @@ class RB_Tree {
     // 이 target는 노드 자체를 삭제해야 함.
     // (새로운 target은 child에 non-nil 노드가 최대 1개)
     target = copy_to_erase(target);
-
     // Child는 target 노드의 non-nil child 우선 노드.
+
     node_type* child;
     if (target->rightChild->is_nil()) {
       child = target->leftChild;
@@ -225,7 +225,6 @@ class RB_Tree {
       }
     }
     delete_node(target);
-
     // nil->parent 다시 세팅.
     this->_nil->parent = get_back_node();
     return 1;
@@ -534,9 +533,55 @@ class RB_Tree {
       n = (++tmp).base();
     }
 
+    node_type* tmp_lc = target->leftChild;
+    node_type* tmp_rc = target->rightChild;
+    node_type* tmp_p = target->parent;
+    Color tmp_c = target->color;
+    target->leftChild = n->leftChild;
+    if (!n->leftChild->is_nil()) {
+      n->leftChild->parent = target;
+    }
+    target->rightChild = n->rightChild;
+    if (!n->rightChild->is_nil()) {
+      n->rightChild->parent = target;
+    }
+    if (target->is_leftchild()) {
+      tmp_p->leftChild = n;
+    } else if (target->is_rightchild()) {
+      tmp_p->rightChild = n;
+    }
+    if (target == n->parent) {
+      target->parent = n;
+    } else {
+      target->parent = n->parent;
+    }
+    target->color = n->color;
+    if (n == tmp_lc) {
+      n->leftChild = target;
+    } else {
+      n->leftChild = tmp_lc;
+    }
+    tmp_lc->parent = n;
+    if (n == tmp_rc) {
+      n->rightChild = target;
+    } else {
+      n->rightChild = tmp_rc;
+    }
+    tmp_rc->parent = n;
+    if (n->is_leftchild()) {
+      n->parent->leftChild = target;
+    } else if (n->is_rightchild()) {
+      n->parent->rightChild = target;
+    }
+    n->parent = tmp_p;
+    if (n->parent->is_nil()) {
+      this->_root = n;
+    }
+    n->color = tmp_c;
+
     _alloc.destroy(target->value);
     _alloc.construct(target->value, *(n->value));
-    return n;
+    return target;
   }
 
   node_type* sibling(node_type* node) {
