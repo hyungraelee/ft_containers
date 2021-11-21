@@ -195,14 +195,12 @@ class RB_Tree {
     if (this->_nil == target) {
       return 0;
     }
-
     // target 노드의 value를 왼쪽의 최댓값, 또는 오른쪽의 최솟값의 value로 변경.
     // 값을 복사해온 노드가 새로운 target이 됨.
     // 이 target는 노드 자체를 삭제해야 함.
     // (새로운 target은 child에 non-nil 노드가 최대 1개)
     target = copy_to_erase(target);
     // Child는 target 노드의 non-nil child 우선 노드.
-
     node_type* child;
     if (target->rightChild->is_nil()) {
       child = target->leftChild;
@@ -300,7 +298,8 @@ class RB_Tree {
   //   return (copied);
   // }
 
-  void showTree() { ft::printTree(_root, 0); }
+  void showMap() { ft::printMap(_root, 0); }
+  void showSet() { ft::printSet(_root, 0); }
 
  private:
   bool is_double_RED(node_type* child, node_type* parent) {
@@ -673,6 +672,7 @@ class RB_Tree {
   // case_6에서 마무리함.
   void delete_case_5(node_type* n) {
     node_type* s = sibling(n);
+    node_type* save = n->parent;
 
     if (s->color == BLACK) {
       if (n->is_leftchild() && s->rightChild->color == BLACK &&
@@ -687,6 +687,7 @@ class RB_Tree {
         rotate_left(s);
       }
     }
+    n->parent = save;
     delete_case_6(n);
   }
 
