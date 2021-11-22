@@ -1,19 +1,17 @@
 #if !defined(UTILS_HPP)
 #define UTILS_HPP
 
-// #include <iostream>
-
 #include "iterator.hpp"
 
 namespace ft {
 
+// 그냥 NULL 세팅보다 type에 맞는 null-pointer로 세팅하기 위함.
 static class nullptr_t {
  public:
   template < class T >
   operator T*() const {
     return (0);
   }
-
   template < class C, class T >
   operator T C::*() const {
     return (0);
@@ -21,7 +19,6 @@ static class nullptr_t {
 
  private:
   void operator&() const;
-
 } u_nullptr = {};
 
 template < typename InputIterator >
@@ -36,11 +33,7 @@ typename ft::iterator_traits< InputIterator >::difference_type distance(
 }
 
 /**
- * @brief Enable type if condition is met.
- * The type T is enabled as member type enable_if::type if Cond is true.
- * Otherwise, enable_if::type is not defined.
- * @param Cond A compile-time constant of type bool.
- * @param T A type.
+ * Cond가 true인 경우를 specialize하여 type을 typename으로 사용할 수 있게 한다.
  */
 template < bool Cond, typename T = void >
 struct enable_if {};
@@ -50,29 +43,9 @@ struct enable_if< true, T > {
   typedef T type;
 };
 
-// template < typename T, typename U >
-// struct is_same {
-//   static const value = false;
-// };
-
-// template < typename T >
-// struct is_same< T, T > {
-//   static const value = true;
-// };
-
-// template < typename T,
-//            typename = typename ft::enable_if< ft::is_same<
-//                typename T::value_type,
-//                typename ft::iterator_traits< T >::value_type >::value >::type
-//                >
-// struct is_iter {
-//   static const value = true;
-// };
-
 /**
- * @brief Checks whether T is an integral type.
- * @details Provides the member constant value which is equal to true,
- * if T is the type
+ * T가 integral type인지 체크한다.
+ * T가 다음의 type들 중 하나라면 true,
  * bool,
  * char,
  * char16_t,
@@ -89,8 +62,7 @@ struct enable_if< true, T > {
  * unsigned long long,
  * or any implementation-defined extended integer types,
  * including any signed, unsigned, and cv-qualified variants.
- * Otherwise, value is equal to false.
- * @param T a type to check.
+ * 그렇지 않으면 false.
  */
 template < bool is_integral, typename T >
 struct integral_traits {
@@ -147,25 +119,14 @@ struct is_integral_type< unsigned long long int >
     : public integral_traits< true, unsigned long long int > {};
 
 /**
- * @brief Trait class that identifies whether T is an integral type.
- * It inherits from is_integral_type, depending on whether T is an integral
- * type.
- * @param T a type to check.
+ * T가 integral type인지 식별하는 class.
+ * is_integral_type< T > 를 상속받아 T에 따라 type을 다르게 갖는다.
  */
 template < typename T >
 struct is_integral : public is_integral_type< T > {};
 
 /**
- * @brief Lexicographical less-than comparison.
- * @details Returns true if the range [first1,last1) compares lexicographically
- * less than the range [first2,last2).
- * @param first1, last1 Input iterators to the initial and final positions of
- * the first sequence. The range used is [first1,last1).
- * @param first2, last2 Input iterators to the initial and final positions of
- * the second sequence. The range used is [first2,last2).
- * @return true if the first range compares lexicographically less than the
- * second. false otherwise (including when all the elements of both ranges are
- * equivalent).
+ * 사전식 순서 비교_1
  */
 template < typename InputIterator1, typename InputIterator2 >
 bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
@@ -182,13 +143,7 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 }
 
 /**
- * @brief Lexicographical less-than comparison.
- * @details Returns true if the range [first1,last1) compares lexicographically
- * less than the range [first2,last2). It decided by comp.
- * @param comp the function that will compare.
- * @return true if the first range compares lexicographically less than the
- * second. false otherwise (including when all the elements of both ranges are
- * equivalent).
+ * 사전식 순서 비교_2 : comp로 비교.
  */
 template < typename InputIterator1, typename InputIterator2, typename Compare >
 bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
@@ -206,15 +161,7 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 }
 
 /**
- * @brief Test whether the elements in two ranges are equal.
- * @details Compares the elements in the range [first1,last1) with those in the
- * range beginning at first2, and returns true if all of the elements in both
- * ranges match.
- * @param first1, last1 Input iterators to the initial and final positions of
- * the first sequence. The range used is [first1,last1).
- * @param first2 Input iterator to the initial position of the second sequence.
- * @return true if all the elements in the range [first1,last1) compare equal to
- * those of the range starting at first2, and false otherwise.
+ * iterator범위 사이에서 동일한지 check.
  */
 template < class InputIterator1, class InputIterator2 >
 bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2) {
@@ -227,16 +174,7 @@ bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2) {
 }
 
 /**
- * @brief Test whether the elements in two ranges are equal.
- * @details Compares the elements in the range [first1,last1) with those in the
- * range beginning at first2, and returns true if all of the elements in both
- * ranges match. It decided by pred.
- * @param first1, last1 Input iterators to the initial and final positions of
- * the first sequence. The range used is [first1,last1).
- * @param first2 Input iterator to the initial position of the second sequence.
- * @param pred Binary function that returns a value convertible to bool.
- * @return true if all the elements in the range [first1,last1) compare equal to
- * those of the range starting at first2, and false otherwise.
+ * iterator범위 사이에서 동일한지 check. : pred로 비교.
  */
 template < class InputIterator1, class InputIterator2, class BinaryPredicate >
 bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2,
@@ -271,30 +209,11 @@ struct pair {
   first_type first;
   second_type second;
 
-  /**
-   * @brief default constructor
-   */
   pair() : first(), second() {}
 
-  /**
-   * @brief copy constructor
-   * @param pr Another pair object.
-   */
   template < class U, class V >
   pair(const pair< U, V >& pr) : first(pr.first), second(pr.second) {}
-
-  /**
-   * @brief  initialization constructor
-   * @param a An object of the type of first.
-   * @param b An object of the type of second.
-   */
   pair(const first_type& a, const second_type& b) : first(a), second(b) {}
-
-  /**
-   * @brief Assign contents
-   * @param pr Another pair object.
-   * @return *this
-   */
   pair& operator=(const pair& pr) {
     if (this != &pr) {
       this->first = pr.first;
@@ -304,79 +223,37 @@ struct pair {
   }
 };
 
-/**
- * @brief Equal comparison between two pair object.
- * @param lhs Base of comparison.
- * @param rhs To compare with "lsh".
- * @return True if the condition is hold, otherwise false.
- */
 template < class T1, class T2 >
 bool operator==(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return (lhs.first == rhs.first && lhs.second == rhs.second);
 }
 
-/**
- * @brief Difference comparison between two pair object.
- * @param lhs Base of comparison.
- * @param rhs To compare with "lsh".
- * @return True if the condition is hold, otherwise false.
- */
 template < class T1, class T2 >
 bool operator!=(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return !(lhs == rhs);
 }
 
-/**
- * @brief Inferior comparison between two pair object.
- * @param lhs Base of comparison.
- * @param rhs To compare with "lsh".
- * @return True if the condition is hold, otherwise false.
- */
 template < class T1, class T2 >
 bool operator<(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return lhs.first < rhs.first ||
          (!(rhs.first < lhs.first) && (lhs.second < rhs.second));
 }
 
-/**
- * @brief Inferior or equal comparison between two pair object.
- * @param lhs Base of comparison.
- * @param rhs To compare with "lsh".
- * @return True if the condition is hold, otherwise false.
- */
 template < class T1, class T2 >
 bool operator<=(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return (!(rhs < lhs));
 }
 
-/**
- * @brief Superior comparison between two pair object.
- * @param lhs Base of comparison.
- * @param rhs To compare with "lsh".
- * @return True if the condition is hold, otherwise false.
- */
 template < class T1, class T2 >
 bool operator>(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return (rhs < lhs);
 }
 
-/**
- * @brief Superior or equal comparison between two pair object.
- * @param lhs Base of comparison.
- * @param rhs To compare with "lsh".
- * @return True if the condition is hold, otherwise false.
- */
 template < class T1, class T2 >
 bool operator>=(const pair< T1, T2 >& lhs, const pair< T1, T2 >& rhs) {
   return !(lhs < rhs);
 }
 
-/**
- * @brief Construct pair object
- * @param x,y Values for the members first and second
- * @return A pair object whose elements first and second are set to x and y
- * respectivelly.
- */
 template < class T1, class T2 >
 pair< T1, T2 > make_pair(T1 x, T2 y) {
   return (ft::pair< T1, T2 >(x, y));

@@ -2,7 +2,6 @@
 #define RB_TREEITERATOR_HPP
 
 #include "RB_TreeNode.hpp"
-// #include "bidirectional_iterator.hpp"
 #include "iterator.hpp"
 #include "utils.hpp"
 
@@ -37,14 +36,8 @@ class RB_TreeIterator
         while (ret->is_rightchild()) {
           ret = ret->parent;
         }
-        // 여기서 nil을 가리키게 하기 위해 수정했음.
-        // 조건문 두개 모두 리턴값 동일하기 때문에 나중에 다시 확인하고 수정할
-        // 것!
-        if (ret->is_root()) {
-          ret = ret->parent;
-        } else if (ret->is_leftchild()) {
-          ret = ret->parent;  // leftChild인 parent를 찾은 후 그의 부모.
-        }
+        // ret-node가 leftChild 또는 root이다.
+        ret = ret->parent;
       }
     }
     return (ret);
@@ -57,7 +50,6 @@ class RB_TreeIterator
       ret = this->np->parent;
       return ret;
     }
-
     if (!this->np->leftChild->is_nil()) {  // 현재 leftChild가 있는 경우.
       ret = this->np->leftChild;
       while (!ret->rightChild->is_nil()) {
@@ -69,14 +61,7 @@ class RB_TreeIterator
         while (ret->is_leftchild()) {
           ret = ret->parent;
         }
-        // 여기서 nil을 가리키게 하기 위해 수정했음.
-        // 조건문 두개 모두 리턴값 동일하기 때문에 나중에 다시 확인하고 수정할
-        // 것!
-        // if (ret->is_root()) {
-        //   ret = ret->parent;
-        // } else if (ret->is_rightchild()) {
-        //   ret = ret->parent;  // rightChild인 parent를 찾은 후 그의 부모.
-        // }
+        // ret-node가 rightChild 또는 root이다.
         ret = ret->parent;
       }
     }
@@ -86,7 +71,7 @@ class RB_TreeIterator
  public:
   RB_TreeIterator(node_type *ptr = u_nullptr) : np(ptr) {}
   RB_TreeIterator(const RB_TreeIterator< T > &other) : np(other.base()) {}
-  virtual ~RB_TreeIterator() {};
+  virtual ~RB_TreeIterator(){};
 
   RB_TreeIterator &operator=(const RB_TreeIterator< T > &other) {
     if (this != &other) this->np = other.base();
@@ -135,30 +120,6 @@ class RB_TreeIterator
     return (this->np != ot.base());
   }
 };
-
-// template < class T >
-// bool operator==(const ft::RB_TreeIterator< T, T*, T& > &lhs,
-//                 const ft::RB_TreeIterator< T, T*, T& > &rhs) {
-//   return (lhs.base() == rhs.base());
-// }
-
-// template < class T_L, class T_R >
-// bool operator==(const ft::RB_TreeIterator< T_L, T_L*, T_L& > &lhs,
-//                 const ft::RB_TreeIterator< T_R, T_R*, T_R& > &rhs) {
-//   return (lhs.base() == rhs.base());
-// }
-
-// template < class T >
-// bool operator!=(const ft::RB_TreeIterator< T > &lhs,
-//                 const ft::RB_TreeIterator< T > &rhs) {
-//   return (lhs.base() != rhs.base());
-// }
-
-// template < class T_L, class T_R >
-// bool operator!=(const ft::RB_TreeIterator< T_L > &lhs,
-//                 const ft::RB_TreeIterator< T_R > &rhs) {
-//   return (lhs.base() != rhs.base());
-// }
 
 }  // namespace ft
 

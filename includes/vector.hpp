@@ -11,68 +11,17 @@ namespace ft {
 template < typename T, typename Allocator = std::allocator< T > >
 class vector {
  public:
-  //=+=+=+=+=+=+= Typedefs =+=+=+=+=+=+=//
-  /**
-   * @brief A type that represents the data type stored in a vector.
-   */
   typedef T value_type;
-
-  /**
-   * @brief A type that represents the allocator class for the vector object.
-   */
   typedef Allocator allocator_type;
-
-  /**
-   * @brief A type that provides a reference to an element stored in a vector.
-   */
   typedef typename allocator_type::reference reference;
-
-  /**
-   * @brief A type that provides a reference to a const element stored in a
-   * vector. It's used for reading and doing const operations.
-   */
   typedef typename allocator_type::const_reference const_reference;
-
-  /**
-   * @brief A type that provides a pointer to an element in a vector.
-   */
   typedef typename allocator_type::pointer pointer;
-
-  /**
-   * @brief A type that provides a pointer to a const element in a vector.
-   */
   typedef typename allocator_type::const_pointer const_pointer;
-
-  /**
-   * @brief A type that provides a random-access iterator that can read or
-   * modify any element in a vector.
-   */
   typedef ft::VectorIterator< T > iterator;
-  /**
-   * @brief A type that provides a random-access iterator that can read a const
-   * element in a vector.
-   */
   typedef ft::VectorIterator< const T > const_iterator;
-  /**
-   * @brief A type that provides a random-access iterator that can read or
-   * modify any element in a reversed vector.
-   */
   typedef ft::reverse_iterator< iterator > reverse_iterator;
-  /**
-   * @brief A type that provides a random-access iterator that can read any
-   * const element in the vector.
-   */
   typedef ft::reverse_iterator< const_iterator > const_reverse_iterator;
-
-  /**
-   * @brief A type that counts the number of elements in a vector. -> size_t
-   */
   typedef typename allocator_type::size_type size_type;
-
-  /**
-   * @brief A type that provides the difference between the addresses of two
-   * elements in a vector. -> ptrdiff_t
-   */
   typedef typename allocator_type::difference_type difference_type;
 
  private:
@@ -82,15 +31,12 @@ class vector {
   pointer _end_capacity;
 
  public:
-  //=+=+=+=+=+=+= Member functions =+=+=+=+=+=+=//
-  // empty container constructor (default constructor)
   explicit vector(const allocator_type &alloc = allocator_type())
       : _alloc(alloc),
         _start(u_nullptr),
         _end(u_nullptr),
         _end_capacity(u_nullptr) {}
 
-  // fill constructor
   explicit vector(size_type n, const value_type &val = value_type(),
                   const allocator_type &alloc = allocator_type())
       : _alloc(alloc) {
@@ -103,7 +49,6 @@ class vector {
     }
   }
 
-  // range constructor
   template < typename InputIterator >
   vector(InputIterator first, InputIterator last,
          const allocator_type &alloc = allocator_type(),
@@ -123,7 +68,6 @@ class vector {
     }
   }
 
-  // copy constructor
   vector(const vector &x)
       : _alloc(x._alloc),
         _start(u_nullptr),
@@ -141,13 +85,11 @@ class vector {
     this->_end_capacity = this->_end;
   }
 
-  // destructor
   ~vector() {
     this->clear();
     this->_alloc.deallocate(this->_start, this->capacity());
   }
 
-  // assign operator
   vector &operator=(const vector &x) {
     if (this != &x) {
       this->clear();
@@ -156,42 +98,23 @@ class vector {
     return (*this);
   }
 
-  //=+=+=+=+=+=+= Iterators =+=+=+=+=+=+=//
-  // Returns an iterator pointing to the first element in the vector.
   iterator begin() { return (iterator(this->_start)); }
   const_iterator begin() const { return (const_iterator(this->_start)); }
-
-  // Returns an iterator referring to the past-the-end element in the vector
-  // container.
   iterator end() { return (iterator(this->_end)); }
   const_iterator end() const { return (const_iterator(this->_end)); }
-
-  /* Returns a reverse iterator pointing to the last element in the vector
-  (i.e., its reverse beginning). */
   reverse_iterator rbegin() { return (reverse_iterator(this->_end)); }
   const_reverse_iterator rbegin() const {
     return (const_reverse_iterator(this->_end));
   }
-
-  /* Returns a reverse iterator pointing to the theoretical element preceding
-  the first element in the vector (which is considered its reverse end). */
   reverse_iterator rend() { return (reverse_iterator(this->_start)); }
   const_reverse_iterator rend() const {
     return (const_reverse_iterator(this->_start));
   }
 
-  //=+=+=+=+=+=+= Capacity =+=+=+=+=+=+=//
-  // Returns the number of elements in the vector.
   size_type size() const { return (this->_end - this->_start); }
-
-  /* Returns the maximum number of elements that the vector can hold.
-  This is not the amount of storage space currently allocated to the vector
-  (this can be obtained with member vector::capacity),
-  but the maximum potential size the vector could reach due to system or library
-  implementation limitations. */
   size_type max_size() const { return (this->_alloc.max_size()); }
 
-  // Resizes the container so that it contains n elements.
+  // n개의 val값들을 갖는 vector로 resize한다.
   void resize(size_type n, value_type val = value_type()) {
     size_type prev_size = this->size();
 
@@ -213,10 +136,9 @@ class vector {
     }
   }
 
-  // Return size of allocated storage capacity.
+  // element의 갯수가 아닌, 할당받은 메모리의 갯수. (잠재적 크기)
   size_type capacity() const { return (this->_end_capacity - this->_start); }
 
-  // Returns whether the vector is empty (i.e. whether its size is 0).
   bool empty() const {
     if (this->size() == 0)
       return (true);
@@ -224,9 +146,10 @@ class vector {
       return (false);
   }
 
-  // Requests that the vector capacity be at least enough to contain n elements.
   void reserve(size_type n) {
-    if (n > max_size()) throw(std::length_error("ft::vector::reserve"));
+    if (n > max_size()) {
+      throw(std::length_error("ft::vector::reserve"));
+    }
     if (n > this->capacity()) {
       pointer prev_start = this->_start;
       pointer prev_end = this->_end;
@@ -243,34 +166,33 @@ class vector {
     }
   }
 
-  //=+=+=+=+=+=+= Element access =+=+=+=+=+=+=//
-  // Returns a reference to the element at position n in the vector container.
   reference operator[](size_type n) { return (*(this->_start + n)); }
   const_reference operator[](size_type n) const {
     return (*(this->_start + n));
   }
 
-  // Returns a reference to the element at position n in the vector.
   reference at(size_type n) {
-    if (n >= this->size()) throw(std::out_of_range("ft::vector::at"));
-    return ((*this)[n]);
-  }
-  const_reference at(size_type n) const {
-    if (n >= this->size()) throw(std::out_of_range("ft::vector::at"));
+    if (n >= this->size()) {
+      throw(std::out_of_range("ft::vector::at"));
+    }
     return ((*this)[n]);
   }
 
-  // Returns a reference to the first element in the vector.
+  const_reference at(size_type n) const {
+    if (n >= this->size()) {
+      throw(std::out_of_range("ft::vector::at"));
+    }
+    return ((*this)[n]);
+  }
+
+  // 벡터의 첫번째 element를 리턴.
   reference front() { return (*(this->_start)); }
   const_reference front() const { return (*(this->_start)); }
 
-  // Returns a reference to the last element in the vector.
+  // 벡터의 마지막 element를 리턴.
   reference back() { return (*(this->_end - 1)); }
   const_reference back() const { return (*(this->_end - 1)); }
 
-  //=+=+=+=+=+=+= Modifiers =+=+=+=+=+=+=//
-  /* Assigns new contents to the vector, replacing its current contents,
-  and modifying its size accordingly. */
   template < typename InputIterator >
   void assign(InputIterator first, InputIterator last,
               typename ft::enable_if< !ft::is_integral< InputIterator >::value,
@@ -316,8 +238,9 @@ class vector {
     }
   }
 
-  /* Adds a new element at the end of the vector, after its current last
-  element. The content of val is copied (or moved) to the new element. */
+  // 벡터의 뒤에 새로운 element를 추가한다.
+  // 늘어난 벡터의 크기가 capacity를 넘어갈 경우, 이전 capacity * 2의 크기로
+  // 늘어남.
   void push_back(const value_type &val) {
     if (this->_end == this->_end_capacity) {
       if (this->_start == this->_end)
@@ -329,54 +252,13 @@ class vector {
     ++this->_end;
   }
 
-  // Removes the last element in the vector, effectively reducing the container
-  // size by one.
+  // 벡터의 맨 뒤 요소를 하나 제거한다.
   void pop_back() { this->_alloc.destroy(--this->_end); }
 
-  /* The vector is extended by inserting new elements before the element at the
-  specified position,
-  effectively increasing the container size by the number of elements inserted.
-*/
   iterator insert(iterator position, const value_type &val) {
     size_type position_idx = &(*position) - this->_start;
     this->insert(position, 1, val);
     return (this->begin() + position_idx);
-
-    // iterator location = position;
-    // pointer prev_start = this->_start;
-    // pointer prev_end = this->_end;
-    // size_type prev_capacity = this->capacity();
-
-    // if (this->_end == this->_end_capacity) {
-    //   if (this->_start == this->_end) {
-    //     this->_start = this->_alloc.allocate(1);
-    //     this->_alloc.construct(&(*position), val);
-    //     ++this->_end;
-    //     ++this->_end_capacity;
-    //   } else {
-    //     this->_start = this->_alloc.allocate(prev_capacity * 2);
-    //     this->_end_capacity = this->_start + (prev_capacity * 2);
-    //     this->_end = this->_start;
-    //     for (; prev_start != &(*position); prev_start++) {
-    //       this->_alloc.construct(this->_end++, *prev_start);
-    //       this->_alloc.destroy(prev_start);
-    //     }
-    //     this->_alloc.construct(this->_end++, val);
-    //     for (; prev_start != prev_end; prev_start++) {
-    //       this->_alloc.construct(this->_end++, *prev_start);
-    //       this->_alloc.destroy(prev_start);
-    //     }
-    //     this->_alloc.deallocate(prev_start, prev_capacity);
-    //   }
-    // } else {
-    //   ++this->_end;
-    //   for (; prev_end != &(*position); prev_end--) {
-    //     this->_alloc.construct(prev_end, *(prev_end - 1));
-    //     this->_alloc.destroy(prev_end - 1);
-    //   }
-    //   this->_alloc.construct(prev_end, val);
-    // }
-    // return (location);
   }
 
   void insert(iterator position, size_type n, const value_type &val) {
@@ -388,7 +270,9 @@ class vector {
       this->_alloc.construct(tmp, *(tmp - n));
       this->_alloc.destroy(tmp - n);
     }
-    while (n--) this->_alloc.construct(tmp--, val);
+    while (n--) {
+      this->_alloc.construct(tmp--, val);
+    }
   }
 
   template < typename InputIterator >
@@ -409,8 +293,6 @@ class vector {
     }
   }
 
-  // Removes from the vector either a single element (position) or a range of
-  // elements ([first,last)).
   iterator erase(iterator position) {
     pointer location = (&(*position));
 
@@ -439,8 +321,6 @@ class vector {
     return (iterator(location));
   }
 
-  /* Exchanges the content of the container by the content of x,
-  which is another vector object of the same type. Sizes may differ. */
   void swap(vector &x) {
     if (*this == x) return;
 
@@ -460,25 +340,15 @@ class vector {
     this->_alloc = tmp_alloc;
   }
 
-  /* Removes all elements from the vector (which are destroyed),
-  leaving the container with a size of 0. */
   void clear() {
     while (this->_end != this->_start) {
       this->_alloc.destroy(--this->_end);
     }
   }
 
-  //=+=+=+=+=+=+= Allocator =+=+=+=+=+=+=//
-  // Returns a copy of the allocator object associated with the vector.
   allocator_type get_allocator() const { return (this->_alloc); }
 };
 
-//=+=+=+=+=+=+= Non-member function overloads =+=+=+=+=+=+=//
-
-//=+=+=+=+=+=+= Relational Operators =+=+=+=+=+=+=//
-/* The equality comparison (operator==) is performed by first comparing sizes,
-and if they match, the elements are compared sequentially using operator==,
-stopping at the first mismatch (as if using algorithm equal). */
 template < typename T, typename Alloc >
 bool operator==(const vector< T, Alloc > &lhs, const vector< T, Alloc > &rhs) {
   if (lhs.size() != rhs.size()) return (false);
@@ -497,10 +367,6 @@ bool operator!=(const vector< T, Alloc > &lhs, const vector< T, Alloc > &rhs) {
   return (!(lhs == rhs));
 }
 
-/* The less-than comparison (operator<) behaves as if using algorithm
-lexicographical_compare, which compares the elements sequentially using
-operator< in a reciprocal manner
-(i.e., checking both a<b and b<a) and stopping at the first occurrence. */
 template < typename T, typename Alloc >
 bool operator<(const vector< T, Alloc > &lhs, const vector< T, Alloc > &rhs) {
   return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
@@ -522,18 +388,10 @@ bool operator>=(const vector< T, Alloc > &lhs, const vector< T, Alloc > &rhs) {
   return (!(lhs < rhs));
 }
 
-//=+=+=+=+=+=+= Swap =+=+=+=+=+=+=//
-/* The contents of container x are exchanged with those of y.
-Both container objects must be of the same type (same template parameters),
-although sizes may differ. */
 template < typename T, typename Alloc >
 void swap(vector< T, Alloc > &x, vector< T, Alloc > &y) {
   x.swap(y);
 }
-
-//=+=+=+=+=+=+= Template specializations =+=+=+=+=+=+=//
-
-// vector<bool> ?????????
 
 }  // namespace ft
 

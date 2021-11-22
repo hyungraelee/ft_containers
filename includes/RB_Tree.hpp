@@ -1,14 +1,7 @@
 #if !defined(RB_TREE_HPP)
 #define RB_TREE_HPP
 
-#include <algorithm>
-#include <iostream>
-#include <limits>
-#include <memory>
-
 #include "RB_TreeIterator.hpp"
-// #include "RB_TreeNode.hpp"
-// #include "utils.hpp"
 #include "printTree.hpp"
 
 namespace ft {
@@ -50,8 +43,6 @@ class RB_Tree {
     this->_nil->rightChild = this->_nil;
     this->_nil->parent = this->_nil;
     this->_root = this->_nil;
-    // std::cout << "nilColor: " << ((this->_nil->color == RED) ? "RED" :
-    // "BLACK") << std::endl;
   }
 
   RB_Tree(const RB_Tree& ot)
@@ -63,22 +54,18 @@ class RB_Tree {
     this->_nil = make_nil_node();
     this->_nil->leftChild = this->_nil;
     this->_nil->rightChild = this->_nil;
-    // this->_root = copy(ot._root, this->_root);
     copy(ot);
     this->_nil->parent = get_back_node();
   }
 
   virtual ~RB_Tree() {
     clear();
-    // delete_node(this->_nil);
     _node_alloc.destroy(this->_nil);
     _node_alloc.deallocate(this->_nil, 1);
   }
 
   RB_Tree& operator=(const RB_Tree& x) {
     if (this != &x) {
-      // clear();
-      // this->_root = copy(x._root);
       copy(x);
     }
     return (*this);
@@ -95,6 +82,7 @@ class RB_Tree {
     return (res);
   }
 
+  // 이 node를 nil의 parent로 설정.
   node_type* get_back_node() const {
     node_type* res = this->_root;
 
@@ -124,57 +112,28 @@ class RB_Tree {
   }
 
   size_type size() const { return (this->_size); }
-  // size_type max_size() const { return
-  // std::min<size_type>(_node_alloc.max_size(), numeric_limits<dis) }
 
   ft::pair< node_type*, bool > insert(const value_type& val,
                                       node_type* hint = NULL) {
     node_type* position = this->_root;
     node_type* inserted = make_val_node(val);
 
-    // 비어있는 tree인 경우를 먼저 처리하고 리턴 시켜버리자.
+    // 비어있는 tree인 경우를 먼저 처리하고 리턴 시켜버림.
     if (is_empty_tree()) {
-      this->_root = inserted;
-      this->_root->leftChild = this->_nil;
-      this->_root->rightChild = this->_nil;
-      this->_root->parent = this->_nil;
-      this->_nil->parent = this->_root;
-      this->_root->color = BLACK;
-      ++this->_size;
-      return (ft::make_pair(this->_root, true));
+      return (insert_root(inserted));
     }
 
+    // hint위치가 올바르지 않으면 root-node부터 탐색한다.
     if (hint != NULL && !hint->is_nil()) {
       position = check_hint(val, hint);
     }
-    // 들어갈 자리 찾기
-    while (!position->is_nil()) {
-      if (_comp(val, *(position->value))) {  // position 기준 왼쪽으로
-        if (position->leftChild->is_nil()) {
-          // position의 leftChild 자리로 들어감.
-          position->leftChild = inserted;
-          inserted->parent = position;
-          inserted->leftChild = this->_nil;
-          inserted->rightChild = this->_nil;
-          break;
-        } else {
-          position = position->leftChild;
-        }
-      } else if (_comp(*(position->value), val)) {  // position 기준 오른쪽으로
-        if (position->rightChild->is_nil()) {
-          // position의 rightChild 자리로 들어감.
-          position->rightChild = inserted;
-          inserted->parent = position;
-          inserted->leftChild = this->_nil;
-          inserted->rightChild = this->_nil;
-          break;
-        } else {
-          position = position->rightChild;
-        }
-      } else {
-        return (ft::make_pair(position, false));
-      }
+
+    // 들어갈 자리 찾기.
+    ft::pair< node_type*, bool > tmp = find_insert_position(position, inserted);
+    if (!tmp.second) {
+      return (tmp);
     }
+    position = tmp.first;
 
     // 여기로 넘어오면 일단 insert 됨.
     ++this->_size;
@@ -185,8 +144,6 @@ class RB_Tree {
         Recoloring(inserted);
       }
     }
-    // std::cout << "Print Tree" << std::endl;
-    // ft::printTree(this->_root, 0);
     this->_nil->parent = get_back_node();
     return (ft::make_pair(inserted, true));
   }
@@ -195,11 +152,12 @@ class RB_Tree {
     if (this->_nil == target) {
       return 0;
     }
-    // target 노드의 value를 왼쪽의 최댓값, 또는 오른쪽의 최솟값의 value로 변경.
-    // 값을 복사해온 노드가 새로운 target이 됨.
-    // 이 target는 노드 자체를 삭제해야 함.
-    // (새로운 target은 child에 non-nil 노드가 최대 1개)
-    target = copy_to_erase(target);
+    // target-node를 왼쪽의 최대 또는 오른쪽의 최소 node와 위치 변경.
+    // 원래 target-node 위치에는 대체할 node가 들어가있다.
+    // 이후 target-node는 노드 자체를 삭제해야 함.
+    // (위치 변경 후 target은 child에 non-nil 노드가 최대 1개)
+    target = switch_to_erase(target);
+
     // Child는 target 노드의 non-nil child 우선 노드.
     node_type* child;
     if (target->rightChild->is_nil()) {
@@ -207,18 +165,18 @@ class RB_Tree {
     } else {
       child = target->rightChild;
     }
-    // target 노드가 RED인 경우, replace에서 정리 끝남.
+    // target-node가 RED인 경우, replace에서 정리 끝남.
     replace_node(target, child);
     if (target->color == BLACK) {
       if (child->color == RED) {
-        // target 노드가 BLACK인데 Child가 RED인 경우,
-        // (이 경우만 child가 non-nil노드임)
-        // 새로 바뀐 child노드의 색만 BLACK로 변경.
+        // target-node가 BLACK인데 Child-node가 RED인 경우,
+        // (이 경우만 child-node가 non-nil노드임)
+        // 새로 바뀐 child-node의 색만 BLACK로 변경.
         child->color = BLACK;
       } else {
-        // target 노드가 BLACK인데 Child가 BLACK인 경우,
-        // 이떄 사실상 target의 두 자식은 모두 nil이다. 즉, child도 nil.
-        // replace_node에서 child(nil)->parent를 설정해둠.
+        // target-node가 BLACK인데 Child-node가 BLACK인 경우,
+        // 이떄 사실상 target-node의 두 자식은 모두 nil이다. 즉, child-node도
+        // nil. replace_node에서 child(nil)->parent를 상황에 맞게 설정해두었음.
         delete_case_1(child);
       }
     }
@@ -244,6 +202,7 @@ class RB_Tree {
     delete_node(p);
   }
 
+  // k보다 크거나 같은 범위를 구하기 위함.
   node_type* lower_bound(const value_type& k) const {
     iterator itlow(get_front_node());
 
@@ -253,6 +212,7 @@ class RB_Tree {
     return (itlow.base());
   }
 
+  // k보다 큰 범위를 구하기 위함.
   node_type* upper_bound(const value_type& k) const {
     iterator itup(lower_bound(k));
 
@@ -265,7 +225,6 @@ class RB_Tree {
   void copy(const RB_Tree& x) {
     clear();
     copy(x._root);
-    // this->_root = copy(x._root, this->_root);
   }
 
   void copy(node_type* node) {
@@ -281,27 +240,71 @@ class RB_Tree {
     }
   }
 
-  // node_type* copy(node_type* src, node_type* parent) {
-  //   if (src->is_nil()) {
-  //     return (this->_nil);
-  //   }
-  //   node_type* copied = make_val_node(*src->value);
-  //   copied->parent = parent;
-  //   copied->leftChild = this->_nil;
-  //   copied->rightChild = this->_nil;
-  //   if (!src->leftChild->is_nil()) {
-  //     copied->leftChild = copy(src->leftChild, parent);
-  //   }
-  //   if (!src->rightChild->is_nil()) {
-  //     copied->rightChild = copy(src->rightChild, parent);
-  //   }
-  //   return (copied);
-  // }
-
-  void showMap() { ft::printMap(_root, 0); }
-  void showSet() { ft::printSet(_root, 0); }
+  // void showMap() { ft::printMap(_root, 0); }
+  // void showSet() { ft::printSet(_root, 0); }
 
  private:
+  node_type* make_val_node(const value_type& val) {
+    node_type* node;
+
+    node = _node_alloc.allocate(1);
+    _node_alloc.construct(node, node_type(val));
+    return (node);
+  }
+
+  node_type* make_nil_node() {
+    node_type* node;
+
+    node = _node_alloc.allocate(1);
+    _node_alloc.construct(node, node_type());
+    return (node);
+  }
+
+  ft::pair< node_type*, bool > insert_root(node_type* inserted) {
+    this->_root = inserted;
+    this->_root->leftChild = this->_nil;
+    this->_root->rightChild = this->_nil;
+    this->_root->parent = this->_nil;
+    this->_nil->parent = this->_root;
+    this->_root->color = BLACK;
+    ++this->_size;
+    return (ft::make_pair(this->_root, true));
+  }
+
+  ft::pair< node_type*, bool > find_insert_position(node_type* position,
+                                                    node_type* inserted) {
+    while (!position->is_nil()) {
+      if (_comp(*(inserted->value),
+                *(position->value))) {  // position 기준 왼쪽으로
+        if (position->leftChild->is_nil()) {
+          // position의 leftChild 자리로 들어감.
+          position->leftChild = inserted;
+          inserted->parent = position;
+          inserted->leftChild = this->_nil;
+          inserted->rightChild = this->_nil;
+          break;
+        } else {
+          position = position->leftChild;
+        }
+      } else if (_comp(*(position->value),
+                       *(inserted->value))) {  // position 기준 오른쪽으로
+        if (position->rightChild->is_nil()) {
+          // position의 rightChild 자리로 들어감.
+          position->rightChild = inserted;
+          inserted->parent = position;
+          inserted->leftChild = this->_nil;
+          inserted->rightChild = this->_nil;
+          break;
+        } else {
+          position = position->rightChild;
+        }
+      } else {
+        return (ft::make_pair(position, false));
+      }
+    }
+    return (ft::make_pair(position, true));
+  }
+
   bool is_double_RED(node_type* child, node_type* parent) {
     return (child->color == RED && parent->color == RED);
   }
@@ -393,9 +396,8 @@ class RB_Tree {
       prevChild_B = node->parent->leftChild;
       prevChild_C = node->leftChild;
       prevChild_D = node->rightChild;
-    } else {
-      // } else if (_comp(*node->parent->parent->value, *node->value) &&
-      //            _comp(*node->value, *node->parent->value)) {
+    } else {  // _comp(*node->parent->parent->value, *node->value) &&
+      //            _comp(*node->value, *node->parent->value)
       order[0] = node->parent->parent;
       order[1] = node;
       order[2] = node->parent;
@@ -469,6 +471,7 @@ class RB_Tree {
 
   /**
    * *** Hint 쓰는 경우. (hint가 적절한 위치인 경우)
+   * inserted value는 hint node의 right-sub-tree로 들어간다.
    * 공통 조건 :  hint < inserted value 인 경우.
    * 1) hint가 leftChild인 경우, inserted value < hint-parent 이면,
    * hint부터 탐색.
@@ -476,9 +479,7 @@ class RB_Tree {
    * 노드의 parent보다 작으면 hint부터 탐색.
    */
   node_type* check_hint(value_type val, node_type* hint) {
-    // if (*(hint->value) < val) {
     if (_comp(*(hint->value), val)) {
-      // if (hint->is_leftchild() && val < *(hint->parent->value)) {
       if (hint->is_leftchild() && _comp(val, *(hint->parent->value))) {
         return hint;
       } else if (hint->is_rightchild()) {
@@ -487,36 +488,19 @@ class RB_Tree {
         while (tmp->is_rightchild()) {
           tmp = tmp->parent;
         }
-        // if (tmp->is_leftchild() && *(tmp->parent->value) <= val) {
         if (tmp->is_leftchild() && !_comp(val, *(tmp->parent->value))) {
-          return this->_root;
+          return (this->_root);
         }
         return hint;
       }
     }
-    return this->_root;
-  }
-
-  node_type* make_val_node(const value_type& val) {
-    node_type* node;
-
-    node = _node_alloc.allocate(1);
-    _node_alloc.construct(node, node_type(val));
-    return (node);
-  }
-
-  node_type* make_nil_node() {
-    node_type* node;
-
-    node = _node_alloc.allocate(1);
-    _node_alloc.construct(node, node_type());
-    return (node);
+    return (this->_root);
   }
 
   // target의 left가 있으면 left-sub-tree의 최댓값,
   // target의 left가 없으면 right-sub-tree의 최솟값을 target에 복사한다.
   // 복사해온 노드는 삭제해야 하므로 새로운 target로 쓰기위해 리턴함.
-  node_type* copy_to_erase(node_type* target) {
+  node_type* switch_to_erase(node_type* target) {
     iterator tmp(target);
     node_type* n;
     alloc_type _alloc;
@@ -536,6 +520,7 @@ class RB_Tree {
     node_type* tmp_rc = target->rightChild;
     node_type* tmp_p = target->parent;
     Color tmp_c = target->color;
+
     target->leftChild = n->leftChild;
     if (!n->leftChild->is_nil()) {
       n->leftChild->parent = target;
@@ -578,8 +563,6 @@ class RB_Tree {
     }
     n->color = tmp_c;
 
-    _alloc.destroy(target->value);
-    _alloc.construct(target->value, *(n->value));
     return target;
   }
 
@@ -591,7 +574,6 @@ class RB_Tree {
   }
 
   void replace_node(node_type* n, node_type* child) {
-    // n이 root인 경우 생각해보기.
     child->parent = n->parent;
     if (n->is_root()) {
       return;

@@ -1,12 +1,7 @@
 #if !defined(SET_HPP)
 #define SET_HPP
 
-// #include <memory>
-
 #include "RB_Tree.hpp"
-// #include "RB_TreeIterator.hpp"
-// #include "RB_TreeNode.hpp"
-// #include "utils.hpp"
 #include "printTree.hpp"
 
 namespace ft {
@@ -137,14 +132,10 @@ class set {
   }
 
   void erase(iterator first, iterator last) {
-    // int i = 0;
     while (first != last) {
       iterator tmp = first;
       ++first;
-    // std::cout << i++ << std::endl;
-    // showTree();
       erase(tmp);
-    // showTree();
     }
   }
 

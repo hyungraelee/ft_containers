@@ -1,13 +1,7 @@
 #if !defined(MAP_HPP)
 #define MAP_HPP
 
-// #include <memory>
-
 #include "RB_Tree.hpp"
-// #include "RB_TreeIterator.hpp"
-// #include "RB_TreeNode.hpp"
-// #include "utils.hpp"
-#include "printTree.hpp"
 
 namespace ft {
 template < class Key, class T, class Compare = ft::less< Key >,
@@ -105,7 +99,6 @@ class map {
   size_type max_size() const {
     typename tree_type::node_alloc_type _node_alloc;
     return (_node_alloc.max_size());
-    // return (_tree.max_size());
   }
 
   /* tree에서 k 키를 갖는 노드 만든다고 가정하고 들어감. (insert 사용.)
@@ -156,15 +149,18 @@ class map {
 
   void erase(iterator position) { _tree.erase(position.base()); }
 
+  /**
+   * erase 성공 시 1, 실패 시 0 리턴.
+   * tree에 없는 key_type k가 들어온 경우 search에서 nil노드를 리턴한다.
+   * nil노드 erase실행시 실패.
+   */
   size_type erase(const key_type& k) {
     return (_tree.erase(_tree.search(value_type(k, mapped_type()))));
   }
 
   void erase(iterator first, iterator last) {
     while (first != last) {
-      iterator tmp = first;
-      ++first;
-      erase(tmp);
+      erase(first++);
     }
   }
 

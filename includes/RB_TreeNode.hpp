@@ -2,7 +2,6 @@
 #define RB_TREENODE_HPP
 
 #include <memory>
-#include <iostream>
 
 namespace ft {
 
@@ -27,8 +26,7 @@ struct RB_TreeNode {
         parent(NULL),
         color(BLACK),
         alloc(Alloc()) {
-    // this->value = alloc.allocate(1);
-    // alloc.construct(this->value, T());
+    // nil-node
   }
 
   RB_TreeNode(const T &val)
@@ -59,7 +57,7 @@ struct RB_TreeNode {
   ~RB_TreeNode() {
     if (this->value != NULL) {
       alloc.destroy(value);
-      alloc.deallocate(value , 1);
+      alloc.deallocate(value, 1);
     }
   }
 
@@ -91,14 +89,6 @@ struct RB_TreeNode {
     }
     return false;
   }
-
-  // branch의 끝 노드인지. (자신은 nil이 아니며, 두 자식 모두 nil인 노드)
-  // bool is_end_branch() const {
-  //   if (this->leftChild->is_nil() && this->rightChild->is_nil()) {
-  //     return true;
-  //   }
-  //   return false
-  // }
 
   Color get_uncle_color() const {
     if (this->parent->is_leftchild())
