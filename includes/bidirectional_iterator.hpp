@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bidirectional_iterator.hpp                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/24 20:37:20 by hyunlee           #+#    #+#             */
+/*   Updated: 2021/11/24 20:48:32 by hyunlee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #if !defined(BIDIRECTIONAL_ITERATOR_HPP)
 #define BIDIRECTIONAL_ITERATOR_HPP
 
