@@ -5,7 +5,7 @@ INC_DIR = ./includes
 OWN_TEST_DIR = ./tester/OwnTester
 OWN_TEST_OBJS_DIR = ./tester/OwnTester/objs
 OWN_TEST_LOG_DIR = ./tester/OwnTester/log
-MIL_TEST_DIR = ./tester/mil42Tester
+MLI_TEST_DIR = ./tester/mli42Tester
 STD_NAMESPACE = std
 FT_NAMESPACE = ft
 CONT = vector
@@ -19,7 +19,7 @@ endif
 all :
 	@make start
 	@make own
-	@make mil
+	@make mli
 
 start :
 	@$(OWN_TEST_DIR)/mytest.sh
@@ -29,12 +29,12 @@ own :
 	@make stack
 	@make map
 
-mil :
-	@cd $(MIL_TEST_DIR) && ./do.sh vector stack map
+mli :
+	@cd $(MLI_TEST_DIR) && ./do.sh vector stack map
 
 bonus :
 	@make set
-	@cd $(MIL_TEST_DIR) && ./do.sh set
+	@cd $(MLI_TEST_DIR) && ./do.sh set
 
 vector :
 	@make own_test CONT=vector
@@ -81,4 +81,4 @@ fclean : clean
 
 re : fclean all
 
-.PHONY : all start own mil bonus own_test time time_unit clean fclean re
+.PHONY : all start own mli bonus own_test time time_unit clean fclean re
