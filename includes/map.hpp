@@ -221,7 +221,7 @@ class map {
 
   allocator_type get_allocator() const { return (allocator_type()); }
 
-  void showTree() { _tree.showMap(); }
+  // void showTree() { _tree.showMap(); }
 };
 
 template < class Key, class T, class Compare, class Alloc >

@@ -1,0 +1,176 @@
+////////// TEST SET //////////
+  == default / range / copy constructor test ==
+default constructor
+size: 0
+Content is:
+###############################################
+range constructor
+size: 10
+Content is:
+- KEY: 1
+- KEY: 2
+- KEY: 3
+- KEY: 4
+- KEY: 5
+- KEY: 6
+- KEY: 7
+- KEY: 8
+- KEY: 9
+- KEY: 10
+###############################################
+copy constructor
+size: 10
+Content is:
+- KEY: 1
+- KEY: 2
+- KEY: 3
+- KEY: 4
+- KEY: 5
+- KEY: 6
+- KEY: 7
+- KEY: 8
+- KEY: 9
+- KEY: 10
+###############################################
+assign operator
+size: 5
+Content is:
+- KEY: 1
+- KEY: 2
+- KEY: 3
+- KEY: 4
+- KEY: 5
+###############################################
+  == size / clear / empty test ==
+before clear
+size: 5
+Content is:
+- KEY: 1
+- KEY: 2
+- KEY: 3
+- KEY: 4
+- KEY: 5
+###############################################
+after clear
+size: 0
+Content is:
+###############################################
+Is empty: OK
+  == insert / erase test ==
+size: 3
+Content is:
+- KEY: 3
+- KEY: 4
+- KEY: 5
+###############################################
+size: 4
+Content is:
+- KEY: 3
+- KEY: 4
+- KEY: 5
+- KEY: 42
+###############################################
+size: 5
+Content is:
+- KEY: 3
+- KEY: 4
+- KEY: 5
+- KEY: 21
+- KEY: 42
+###############################################
+size: 4
+Content is:
+- KEY: 3
+- KEY: 5
+- KEY: 21
+- KEY: 42
+###############################################
+size: 3
+Content is:
+- KEY: 3
+- KEY: 5
+- KEY: 42
+###############################################
+size: 2
+Content is:
+- KEY: 3
+- KEY: 42
+###############################################
+  == swap / find / count test ==
+size: 2
+Content is:
+- KEY: 3
+- KEY: 42
+###############################################
+size: 10
+Content is:
+- KEY: 1
+- KEY: 2
+- KEY: 3
+- KEY: 4
+- KEY: 5
+- KEY: 6
+- KEY: 7
+- KEY: 8
+- KEY: 9
+- KEY: 10
+###############################################
+swap
+size: 10
+Content is:
+- KEY: 1
+- KEY: 2
+- KEY: 3
+- KEY: 4
+- KEY: 5
+- KEY: 6
+- KEY: 7
+- KEY: 8
+- KEY: 9
+- KEY: 10
+###############################################
+size: 2
+Content is:
+- KEY: 3
+- KEY: 42
+###############################################
+find 5: 5
+count 5: 1
+count 20: 0
+  == lower & upper_bound / equal_range test ==
+lower_bound 5
+upper_bound 6
+equal_range 5, 6
+  == relational operators test ==
+size: 7
+Content is:
+- KEY: 0
+- KEY: 2
+- KEY: 4
+- KEY: 6
+- KEY: 8
+- KEY: 10
+- KEY: 12
+###############################################
+size: 7
+Content is:
+- KEY: 0
+- KEY: 2
+- KEY: 4
+- KEY: 6
+- KEY: 8
+- KEY: 10
+- KEY: 12
+###############################################
+operator ==
+OK
+operator !=
+KO
+operator <
+KO
+operator <=
+OK
+operator >
+KO
+operator >=
+OK
