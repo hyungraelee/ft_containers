@@ -1,12 +1,13 @@
 # 📚 ft_containers
 Re-implement the various container types of the C++ STL.
 
-> |<br>
-> |___ includes (My container template files)<br>
-> |___ tester<br>
->       |___ OwnTester<br>
->       |___ mli42Tester (Thankyou for mli42)<br>
-> 
+```
+ |_ Makefile
+ |___ includes (My container template files)
+ |___ tester
+       |___ OwnTester
+       |___ mli42Tester (Thankyou for mli42)
+```
 
 ## Test
 
