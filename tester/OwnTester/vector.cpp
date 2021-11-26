@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:36:50 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/24 20:36:51 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/26 19:30:51 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,4 +252,6 @@ int main() {
 
   std::cout << "operator >=" << std::endl;
   std::cout << ((v_lhs >= v_rhs) ? "OK" : "KO") << std::endl;
+
+  system("leaks vector");
 }

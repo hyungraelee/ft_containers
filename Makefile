@@ -74,6 +74,11 @@ time_unit :
 	@$(TIME) ./$(CONT) > $(OWN_TEST_LOG_DIR)/$(STD_NAMESPACE)_$(CONT)
 	@rm $(CONT)
 
+print :
+	@$(CC) $(CFLAGS) $(OWN_TEST_DIR)/print_RBtree.cpp -o map -I$(INC_DIR)
+	@./map
+	@rm map
+
 clean :
 	@$(RM) -r $(OWN_TEST_LOG_DIR)
 
@@ -81,4 +86,4 @@ fclean : clean
 
 re : fclean all
 
-.PHONY : all start own mli bonus own_test time time_unit clean fclean re
+.PHONY : all start own mli bonus own_test time time_unit print clean fclean re

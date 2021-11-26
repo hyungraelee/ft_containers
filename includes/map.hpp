@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:37:24 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/24 20:37:25 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/26 19:41:00 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ class map {
 
   allocator_type get_allocator() const { return (allocator_type()); }
 
-  // void showTree() { _tree.showMap(); }
+  void showTree() { _tree.showMap(); }
 };
 
 template < class Key, class T, class Compare, class Alloc >

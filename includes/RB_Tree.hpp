@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:37:29 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/24 20:37:30 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/26 19:28:34 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@
 namespace ft {
 
 template < typename T, typename Compare = ft::less< T >,
-           typename Alloc = std::allocator< T >,
-           typename NodeAlloc = std::allocator< ft::RB_TreeNode< T > > >
+           typename Alloc = std::allocator< T > >
 class RB_Tree {
  public:
   typedef T value_type;
@@ -29,7 +28,7 @@ class RB_Tree {
   typedef Compare value_comp;
   typedef Alloc alloc_type;
   typedef ft::RB_TreeNode< T > node_type;
-  typedef NodeAlloc node_alloc_type;
+  typedef typename Alloc::template rebind<node_type>::other node_alloc_type;
   typedef ft::RB_TreeIterator< T, T*, T& > iterator;
   typedef ft::RB_TreeIterator< T, const T*, const T& > const_iterator;
   typedef size_t size_type;
@@ -252,8 +251,7 @@ class RB_Tree {
     }
   }
 
-  // void showMap() { ft::printMap(_root, 0); }
-  // void showSet() { ft::printSet(_root, 0); }
+  void showMap() { ft::printMap(_root, 0); }
 
  private:
   node_type* make_val_node(const value_type& val) {
