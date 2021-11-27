@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:37:29 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/26 19:28:34 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/27 15:44:50 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class RB_Tree {
   typedef Compare value_comp;
   typedef Alloc alloc_type;
   typedef ft::RB_TreeNode< T > node_type;
-  typedef typename Alloc::template rebind<node_type>::other node_alloc_type;
+  typedef typename Alloc::template rebind< node_type >::other node_alloc_type;
   typedef ft::RB_TreeIterator< T, T*, T& > iterator;
   typedef ft::RB_TreeIterator< T, const T*, const T& > const_iterator;
   typedef size_t size_type;
@@ -142,6 +142,8 @@ class RB_Tree {
     // 들어갈 자리 찾기.
     ft::pair< node_type*, bool > tmp = find_insert_position(position, inserted);
     if (!tmp.second) {
+      _node_alloc.destroy(inserted);
+      _node_alloc.deallocate(inserted, 1);
       return (tmp);
     }
     position = tmp.first;
