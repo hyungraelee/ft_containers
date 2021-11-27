@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:37:27 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/26 19:32:20 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/27 15:51:54 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ void printMap(RB_TreeNode< T >* node, int depth) {
   int tmp_depth = depth;
   if (node->is_nil()) {
     while (tmp_depth--) {
-      std::cout << "    ";
+      std::cout << "     ";
     }
     std::cout << "nil" << std::endl;
     return;
   }
   while (tmp_depth--) {
-    std::cout << "    ";
+    std::cout << "     ";
   }
   std::cout << (node->color ? C_RESET : C_RED)
-            << (node->is_root() ? "R" : (node->is_leftchild() ? "L" : "R"))
+            << (node->is_root() ? "Root" : (node->is_leftchild() ? "L" : "R"))
             << " - key: " << node->value->first << C_RESET << std::endl;
   if (!node->leftChild->is_nil()) {
     printMap(node->leftChild, depth + 1);
