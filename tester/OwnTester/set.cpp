@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:36:42 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/26 19:31:07 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/27 15:48:25 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,5 +145,5 @@ int main() {
   std::cout << "operator >=" << std::endl;
   std::cout << ((lhs >= rhs) ? "OK" : "KO") << std::endl;
 
-  system("leaks set");
+  // system("leaks set");
 }

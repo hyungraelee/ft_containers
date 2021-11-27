@@ -6,7 +6,7 @@
 /*   By: hyunlee <hyunlee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 20:36:47 by hyunlee           #+#    #+#             */
-/*   Updated: 2021/11/26 19:31:21 by hyunlee          ###   ########.fr       */
+/*   Updated: 2021/11/27 15:48:27 by hyunlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,5 +141,5 @@ int main() {
   std::cout << "operator >=" << std::endl;
   std::cout << ((lhs >= rhs) ? "OK" : "KO") << std::endl;
 
-  system("leaks stack");
+  // system("leaks stack");
 }
